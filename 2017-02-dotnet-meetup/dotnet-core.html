@@ -53,9 +53,9 @@
                     <h3>What is .net Core?</h3>
 
 					          <ul>
-						            <li align="left" class="fragment">Cross Platform</li>
-						            <li align="left" class="fragment">Open source</li>
-						            <li align="left" class="fragment">Modular</li>
+						            <li class="fragment">Cross Platform</li>
+						            <li class="fragment">Open source</li>
+						            <li class="fragment">Modular</li>
 					          </ul>
                     </section>
 
@@ -63,11 +63,11 @@
                         <h3>Components</h3>
 
                         <ul>
-						                <li align="left" class="fragment">Coreclr</li>
-						                <li align="left" class="fragment">CoreFX</li>
-						                <li align="left" class="fragment">dotnet cli</li>
-                            <li align="left" class="fragment">roslyn</li>
-                            <li align="left" class="fragment">asp.net core</li>
+						                <li class="fragment">Coreclr</li>
+						                <li class="fragment">CoreFX</li>
+						                <li class="fragment">dotnet cli</li>
+                            <li class="fragment">roslyn</li>
+                            <li class="fragment">asp.net core</li>
 					              </ul>
                     </section>
 
@@ -75,9 +75,9 @@
                         <h3>Official Platforms Supported</h3>
 
                         <ul>
-						                <li align="left" class="fragment">Windows</li>
-						                <li align="left" class="fragment">Linux: Debian, Ubuntu, Mint, Red Hat, CentOS, openSuse</li>
-                            <li align="left" class="fragment">MacOS</li>
+						                <li class="fragment">Windows</li>
+						                <li class="fragment">Linux: Debian, Ubuntu, Mint, Red Hat, CentOS, openSuse</li>
+                            <li class="fragment">MacOS</li>
 					              </ul>
                     </section>
 
@@ -90,9 +90,9 @@
                         <h3>Capabilities</h3>
 
                         <ul>
-                            <li align="left" class="fragment">C# and F#</li>
-                            <li align="left" class="fragment">Console App</li>
-                            <li align="left" class="fragment">Asp.net Core</li>
+                            <li class="fragment">C# and F#</li>
+                            <li class="fragment">Console App</li>
+                            <li class="fragment">Asp.net Core</li>
                         </ul>
                     </section>
                 </section>
@@ -102,8 +102,8 @@
                         <h3>Why .net Core?</h3>
 
                         <ul>
-                            <li align="left" class="fragment">*nix support !</li>
-                            <li align="left" class="fragment">2015 ! before to have an official multiplatform sdk for dotnet</li>
+                            <li class="fragment">*nix support !</li>
+                            <li class="fragment">2015 ! before to have an official multiplatform sdk for dotnet</li>
                         </ul>
                     </section>
 
@@ -134,6 +134,32 @@
                             <li>HttpWebRequest API</li>
                         </ul>
                     </section>
+
+                    <section>
+                        <h3 align="left">Differences</h3>
+                        <h4>Reading Xml</h4>
+                        <pre><code class="hljs" data-trim contenteditable>
+ReadElementString -> ReadElementContentAs{String, Int, Double, ...}
+                        </code></pre>
+                    </section>
+
+                    <section>
+                        <h3 align="left">Differences</h3>
+                        <h4>Reflection</h4>
+                        <pre><code class="hljs" data-trim contenteditable>
+Type.GetProperties() does not exist
+                        </code></pre>
+                    </section>
+
+                    <section>
+                        <h3 align="left">Differences</h3>
+                        <h4>HttpWebRequest no more exists</h4>
+
+                        <ul>
+                            <li class="fragment">Lot of problems with this class by design</li>
+                            <li class="fragment">In discussion with the developper, and a full redesign has been done</li>
+                            <li class="fragment">System.Net.HttpClient</li>
+                        </ul>
                 </section>
 
                 <section>
