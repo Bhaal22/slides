@@ -160,6 +160,21 @@ Type.GetProperties() does not exist
                             <li class="fragment">In discussion with the developper, and a full redesign has been done</li>
                             <li class="fragment">System.Net.HttpClient</li>
                         </ul>
+                    </section>
+
+                    <section>
+                        <h3 align="left">Noticed Incompatibilities</h3>
+                        <h4>Timezone naming</h4>
+
+                        <pre><code class="hljs" data-trim contenteditable>
+TimezoneInfo::FindSystemTimeZoneById(string timezoneId)
+Eastern Standard Time (windows) -> EST (linux)
+                        </code></pre>
+
+                        <ul>
+                            <li>Have to report an issue</li>
+                        </ul>
+                    </section>
                 </section>
 
                 <section>
@@ -300,6 +315,16 @@ Hello World!
                 </section>
 
                 <section>
+                    <h3>Roadmap</h3>
+
+                    <ul>
+                        <li>Vb.net support</li>
+                        <li>msbuild</li>
+                        <li>powershell (with ssh support)</li>
+                    </ul>
+                </section>
+
+                <section>
                     <h3>Hands on demo</h3>
 
                     <ul>
@@ -312,8 +337,7 @@ Hello World!
                 </section>
 
 				        <section style="text-align: left;">
-					          <h2>Q/A</h2>
-                    <h3> Thank you !</h3>
+					          <h2> Thank you ! Q/A ?</h2>
 					          <p>
 						            - <a href="https://github.com/Bhaal22/hostname-core">hostname-core</a> <br>
                         - <a href="https://github.com/dotnet/coreclr">coreclr</a> <br>
