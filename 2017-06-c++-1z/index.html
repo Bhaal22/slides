@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+
+	  <head>
+		    <meta charset="utf-8">
+
+		    <title></title>
+
+		    <meta name="description" content="Introduction to C++-1z">
+		    <meta name="author" content="Hakim El Hattab">
+
+		    <meta name="apple-mobile-web-app-capable" content="yes">
+		    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		    <link rel="stylesheet" href="../reveal/css/reveal.css">
+		    <link rel="stylesheet" href="../reveal/css/theme/serif.css" id="theme">
+
+		    <!-- Theme used for syntax highlighting of code -->
+		    <link rel="stylesheet" href="../reveal/lib/css/zenburn.css">
+
+		    <!-- Printing and PDF exports -->
+		    <script>
+			   var link = document.createElement( 'link' );
+			   link.rel = 'stylesheet';
+			   link.type = 'text/css';
+			   link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal/css/print/pdf.css' : '../reveal/css/print/paper.css';
+			   document.getElementsByTagName( 'head' )[0].appendChild( link );
+		    </script>
+
+		    <!--[if lt IE 9]>
+		        <script src="lib/js/html5shiv.js"></script>
+		    <![endif]-->
+	  </head>
+
+	  <body>
+
+		    <div class="reveal">
+
+			      <!-- Any section element inside of this container is displayed as a slide -->
+			      <div class="slides">
+				        <section>
+					          <h1>C++-{1, 2}z</h1>
+					          <h3>C++-{11, 14, 17, 20}</h3>
+					          <p>
+						            <small>Jonathan Muller / <a href="http://twitter.com/bhaal22">@bhaal22</a></small>
+					          </p>
+				        </section>
+
+                <section>
+                    <h3>Motivations</h3>
+
+                    <ul>
+                        <li>No updates of the language / standard library since 2003</li>
+                        <li>Increase type safety by providing safer alternatives to earlier unsafe techniques</li>
+                        <li>Increase performance and the ability to work directly with hardware</li>
+                        <li>Implement zero-overhead principle</li>
+                        <li>Make C++ easy to teach and to learn without removing any utility needed by expert programmers</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Motivations: personal thoughts</h3>
+
+                    <ul>
+                        <li>make c++ fun again</li>
+                        <li>try to get back developpers to use this language</li>
+                        <li>other languages have a shorter lifecycle: javascript, java, c#</li>
+                        <li>c# is born in 2002 and currently c# 7 is implemented</li>
+                        <li>try to improve speed of writing c++ code</li>
+                        <li>since 2011, language / standard library improves every 3 years</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Core language updates</h3>
+
+                    <ul>
+                        <li>compile time improvement: extern template</li>
+                        <li>Initializer lists</li>
+                        <li>type inference: <b>auto</b> keyword and <b>decltype</b></li>
+                        <li>lambda functions: syntaxic sugar around functors</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Core language updates: Class hierarchy</h3>
+
+                    <ul>
+                        <li><b>override</b> keyword: tell compile to look in inheritance tree for a virtual method with the same signature</li>
+                        <li><b>final</b> keyword: class definition / method definition</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Core language updates: misc</h3>
+
+                    <ul>
+                        <li>strongly typed <b>nullptr</b></li>
+                        <li>stronglty typed enums</li>
+                        <li>string literals: u8 (utf-8), u (utf-16), U (utf-32)</li>
+                        <li>smart pointers: std::unique_ptr, std::shared_ptr, std::weak_ptr</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>standard library: threading</h3>
+
+                    <ul>
+                        <li>abstraction initially defined in boost</li>
+                        <li>std::thread</li>
+                        <li>std::mutex</li>
+                        <li>std::condition_variable</li>
+                    </ul>
+                </section>
+
+
+				        <section style="text-align: left;">
+					          <h2> Thank you ! Q/A ?</h2>
+					          <p>
+						            - <a href="https://github.com/cplusplus/draft">C++ Specification Repository</a> <br>
+					          </p>
+				        </section>
+
+			      </div>
+
+		    </div>
+
+		    <script src="../reveal/lib/js/head.min.js"></script>
+		    <script src="../reveal/js/reveal.js"></script>
+
+		    <script>
+
+			   // More info https://github.com/hakimel/reveal.js#configuration
+			   Reveal.initialize({
+				     controls: true,
+				     progress: true,
+				     history: true,
+				     center: true,
+
+				     transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				     // More info https://github.com/hakimel/reveal.js#dependencies
+				     dependencies: [
+					       { src: '../reveal/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					       { src: '../reveal/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					       { src: '../reveal/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					       { src: '../reveal/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					       { src: '../reveal/plugin/zoom-js/zoom.js', async: true },
+					       { src: '../reveal/plugin/notes/notes.js', async: true }
+				     ]
+			   });
+
+		    </script>
+
+	  </body>
+</html>
