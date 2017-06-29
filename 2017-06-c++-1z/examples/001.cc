@@ -1,27 +1,38 @@
+
+#include <vector>
 #include <iostream>
 
 struct A
 {
-  void f(int i)
-  {
-    std::cout << i << std::endl;
-  }
+  int i;
+  A(std::initializer_list<int> integers)
+    : i(*integers.begin())
+  {}
 
-  void f(int *p)
-  {
-    if (p != nullptr)
-      std::cout << *p << std::endl;
-    else
-      std::cout << "nullptr" << std::endl;
-  }
+  template<typename T>
+  T f(T t)
+  { return t + 2; }
 };
+
+template<typename T, typename U>
+auto f(T t, U u) -> decltype(t.f(u))
+{
+  return t.f(u);
+}
 
 int main(int argc, char **argv)
 {
-  A a;
+  A a({1,2,3});
 
-  a.f(0);
-  //a.f(NULL);
-  a.f(nullptr);
+  std::cout << a.i << std::endl;
+
+  int j = 125;
+  auto z = f(a, j);
+
+  std::cout << z << std::endl;
+
+  auto lambda = [](int x, int y) -> int { return x + y; };
+
+  std::cout << lambda(2, 3) << std::endl;
   return 0;
 }
