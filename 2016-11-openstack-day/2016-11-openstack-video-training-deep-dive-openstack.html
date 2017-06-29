@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Video recording</title>
+
+    <meta name="author" content="Piotr Wachowicz" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="css/zenburn.css">
+    <link rel="stylesheet" href="css/openstack.css" id="theme">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href =
+        window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' :
+          'css/print/paper.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--script src="js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/this.js"></script-->
+  </head>
+<body>
+
+  <div class="reveal"><div class="slides">
+
+
+
+    <section data-transition="zoom">
+      <h1>Video Training Deck OpenStack</h1>
+    <p>2016-11-2</p>
+    </section>
+
+
+
+<!-- ----------------------------------------------------------------------------- -->
+
+<!-- FOO -->
+<section data-transition="zoom">
+<h1>Deep dive into</br> OpenStack</h1>
+</section>
+
+
+<section>
+<h2>Outline</h2>
+  <lu>
+      <li>OpenStack 101</li>
+      <li>OpenStack Architecture</li>
+      <lu>
+      <li>10.000 ft</li>
+      <li>1.000 ft</li>
+      <li>100 ft</li>
+      </lu>
+      <li>OpenStack Internals</li>
+  </lu>
+</section>
+
+
+
+<section data-transition="zoom">
+<h1>What is</h1>
+<img width=50% src="img/openstack-new-logo.png"/>
+<h1>?</h1>
+</section>
+
+<section data-transition="zoom">
+<h1>Community driver</h1>
+<h1>Cloud Operating System</h1>
+</section>
+
+
+
+<section data-transition="zoom">
+<div class="fragment">
+<img width="40%" src="img/bricks.jpg"/>
+</br>
+Collection of building blocks
+</div>
+</section>
+
+
+
+<section>
+<h2>Bulding blocks</h2>
+<lu>
+<li class="fragment">Each is a service</li>
+<li class="fragment">Each with it's own REST API</li>
+<li class="fragment">Each offering certain functionality (storage, processing, ...)</li>
+<li class="fragment">All working together</li>
+</lu>
+</section>
+
+
+<section data-transition="zoom">
+<h1>OpenStack Architecture</h1>
+</section>
+
+<section data-transition="zoom">
+<h1>10.000 ft</h1>
+</section>
+
+<section data-transition="zoom">
+<img src="img/openstack-architecture0.png"/>
+</section>
+
+
+
+<section data-transition="zoom">
+<h1>1.000 ft</h1>
+</section>
+
+<section data-transition="zoom">
+<img width="90%" src="img/openstack-architecture1.jpg"/>
+</section>
+
+
+<section>
+<h2>OpenStack core services</h2>
+<lu>
+<li class="fragment">Horizon: Dashboard (user access)</li>
+<li class="fragment">Keystone: identity (Auth*)</li>
+<li class="fragment">Nova: compute (VMs)</li>
+<li class="fragment">Glance: image store (for VMs)</li>
+<li class="fragment">Cinder: block devices (for VMs)</li>
+<li class="fragment">Neutron: networking (for VMs/containers)</li>
+<li class="fragment">Heat: orchestration (of infra)</li>
+</lu>
+</section>
+
+
+
+
+
+<section>
+<h2>OpenStack core services</h2>
+<lu>
+<li class="fragment">Services talk externally via HTTP APIs</li>
+<li class="fragment">Services have multiple parts (e.g. nova-api, nova-scheduler, nova-conductor, nova-compute)</li>
+<li class="fragment">Internally those parts use AMQP for communication</li>
+<li class="fragment">3 nodes classes: Controller, Network, Hypervisor nodes</li>
+<li class="fragment">Different nodes classes run different parts of services</li>
+<li class="fragment">e.g. nova-compute on Hypervisors, and all other nova-* on Controllers </li>
+</lu>
+</section>
+
+
+<section data-transition="zoom">
+<h1>100 ft</h1>
+</section>
+
+<section data-transition="zoom">
+<img width="90%" src="img/openstack-architecture2.jpg"/>
+</section>
+
+<section>
+<h2>Example: compute (Nova)</h2>
+<lu>
+<li class="fragment">nova-api</li>
+<li class="fragment">nova-scheduler</li>
+<li class="fragment">nova-compute</li>
+<li class="fragment">nova-conductor</li>
+<li class="fragment">nova-novncproxy</li>
+</lu>
+</section>
+
+<section>
+<h2>Counter Example: auth (keystone)</h2>
+<lu>
+<li>Keystone</li>
+</lu>
+</section>
+
+
+<section>
+<h2> Example: networking (Neutron) </h2>
+<lu>
+<li>neutron-server</li>
+<li>dhcp-agent</li>
+<li>l2-agent:</li>
+<lu>
+<li>linuxbridge-agent</li>
+<li>ovs-agent</li>
+</lu>
+</section>
+
+
+<section>
+<h2>OpenStack aux. software</h2>
+<lu>
+<li>MySQL (galera)</li>
+<li>AMQP (RabbitMQ)</li>
+<li>HAProxy</li>
+<li>ELK</li>
+</lu>
+</section>
+
+<section>
+<h2>OpenStack Node Types</h2>
+<lu>
+<li>Controller nodes  (api-endpoint, and logic)</li>
+<li>Hypervisor (compute) nodes</li>
+<li>Network nodes</li>
+</lu>
+</section>
+
+
+
+<section data-transition="zoom">
+<h1>6 ft</h1>
+<p>It's about choice</p>
+</section>
+
+<section>
+<h2>Storage</h2>
+<p>Where to store data?</p>
+<lu>
+<li>Local vs distributed</li>
+<li>Cinder (70+ drivers)</li>
+<li>Object: Ceph vs Swift</li>
+</lu>
+</section>
+
+
+<section>
+<h2>OpenStack Networking</h2>
+<p>Tenants (users) want isolated and secure networks</p>
+<lu>
+<li>VXLANs (Overlay, Ethernet in UDP)</li>
+<li>VLANs</li>
+<li>GRE</li>
+</lu>
+</section>
+
+<section>
+<h2>OpenStack Routers</h2>
+<lu>
+<li>CVR (centralized)</li>
+<li>DVR (distributed)</li>
+</lu>
+</section>
+
+
+
+<section data-transition="zoom">
+<h1>OpenStack Internals</h1>
+</section>
+
+<section data-transition="zoom">
+<h1>Example - creating a VM</h1>
+<p>how it all ties together</p>
+</section>
+
+<section>
+<h2>Example (1/2)</h2>
+<lu>
+<li class="fragment">User (client) wants to create a VM</li>
+<li class="fragment">Client authenticates against keystone's API</li>
+<li class="fragment">Obtain a token for a specific project</li>
+<li class="fragment">Uses token to ask nova-api for a vm</li>
+<li class="fragment">Nova-api verifies token against keystone's API</li>
+<li class="fragment">Nova-api forwards the request to nova-scheduler</li>
+<li class="fragment">Nova-scheduler picks a host (filters, weights)</li>
+<li class="fragment">...</li>
+</lu>
+</section>
+
+
+
+<section>
+<h2>Example (2/2)</h2>
+<lu>
+<li  class="fragment">...</li>
+
+<li class="fragment">Nova-scheduler picks a host (filters, weights)</li>
+<li class="fragment">Nova-scheduler ask nova-compute on that host to boot vm</li>
+<li class="fragment">Nova-compute asks Cinder for a volume</li>
+<li class="fragment">Nova-compute asks Neutron for networking</li>
+<li class="fragment">Nova-compute spins up a VM</li>
+<li class="fragment">Nova-compute asks nova-conductor to update the DB</li>
+<li class="fragment">VM starts</li>
+</lu>
+</section>
+
+
+<section data-transition="zoom">
+<h1>Recap</h1>
+</section>
+
+
+<section>
+<h1>Takeways</h1>
+<lu>
+<li class="fragment">OpenStack is a BBoB</li>
+<li class="fragment">big box of bricks</li>
+
+<li class="fragment">Piece them together anyway you like ...</li>
+<li class="fragment"> ... or let Bright do it for you!</li>
+</lu>
+</section>
+
+
+
+
+<section>
+Thank you
+</section>
+
+
+<section>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+  <div class="footer">
+
+  </div>
+
+  <script src="js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+
+  <script src="js/this.js"></script>
+
+  </body>
+</html>
+
+

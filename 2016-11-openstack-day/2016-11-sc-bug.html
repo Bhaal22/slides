@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>BUG - Bright for Public, Private, and Hybrid Clouds</title>
+
+    <meta name="author" content="Piotr Wachowicz" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="css/zenburn.css">
+    <link rel="stylesheet" href="css/openstack.css" id="theme">
+    
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href =
+        window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' :
+          'css/print/paper.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--script src="js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/this.js"></script-->
+  </head>
+<body>
+
+  <div class="reveal"><div class="slides">
+  
+  
+  <!------------ First Screen ------------->
+    <section>
+      <h1 style="font-size:2em">Bright for Public, Private,<br/> and Hybrid Clouds</h1>
+      <!--img src="img/bug-small.jpg"/-->
+      
+      <p>Bright User Group</p><p>Salt Lake City 2016</p>
+      <p><i>Piotr Wachowicz</i><br/><span style="font-size:0.5em">Cloud Integration Lead</span></p>
+    </section>
+
+  <!------------ INTRO ------------->   
+    <section data-transition="zoom">
+      <h1>Clouds</h1>
+    </section>
+    
+    <section>
+      <h2>What are "clouds"?</h2>
+      <lu>
+
+        <li class="fragment">Collections of resources/services ...</li>
+        <li class="fragment">... which are easy to consume ...</li>
+        <li class="fragment">... via one or more service models: IaaS/PaaS/SaaS</li>
+      </lu>
+      <br/>
+      <lu>
+        <li class="fragment">Either public ...</li>
+        <li class="fragment">or private ...</li>
+        <li class="fragment">or hybrid.</li>
+        </lu>
+    </section>
+    
+    <section>
+      <h2>Why clouds?</h2>
+      <lu>
+        <li class="fragment"><cb>lower costs</cb>: sharing physical HW resources</li>
+        <li class="fragment"><cu>save time and space</cu>: virtualized resources</li>
+        <li class="fragment"><cu>creativity</cu>: easy prototyping</li>
+        <li class="fragment"><cu>productivity</cu>: focus on innovation, not reinventing another wheel</li>
+      </lu>
+    </section>
+   
+
+
+<section  data-transition="zoom">
+<h1>public?</h1>
+</section>
+
+<section  data-transition="zoom">
+<img width=50% src="img/aws-logo.png"/>
+</section>
+
+<section  data-transition="zoom">
+<img width=50% src="img/azure-logo.png"/>
+</section>
+
+<section  data-transition="zoom">
+<img width=50% src="img/google-cloud-platform.jpg"/>
+</section>
+
+<section  data-transition="zoom">
+<img width=50% src="img/rackspace-logo.png"/>
+</section>
+
+<section  data-transition="zoom">
+<h1>private?</h1>
+</section>
+
+<section  data-transition="zoom">
+<img width=50% src="img/openstack-new-logo.png"/>
+</section>
+
+<section  data-transition="zoom">
+<h1>hybrid?</h1>
+</section>
+
+    
+    <section>
+    <h2>Outline</h2>
+    
+      <lu>
+        <li style="list-style-type:none">Public Clouds (via Cloud Bursting)</li>      
+        <lu>
+          <li>Cluster Extension</li>
+          <li>Cluster on Demand for AWS (COD)</li>
+        </lu>
+        <br/>
+        <li style="list-style-type:none">Private Clouds (Bright OpenStack)</li>
+        <lu>
+          <li>What is OpenStack?</li>
+          <li>What is Bright OpenStack</li>
+        </lu>
+        <br/>
+        <li style="list-style-type:none">Hybrid Clouds (with Bright)</li>        
+        <lu>
+          <li>Cluster on Demand for OpenStack</li>
+          <li>HPC-as-a-Service and XaaS</li>          
+        </lu>
+        
+      </lu>
+    </section>
+
+
+
+
+
+
+   <section data-transition="zoom">
+      <h1>Part 1</h1>
+      <p>Cloud Bursting to<br/>Public Clouds</p>
+      
+    </section>
+
+
+<section  data-transition="zoom">
+<h2>Why public clouds?</h2>
+<lu>
+<li class="fragment">low/no up-front cost</li>
+<li class="fragment">scale -> ∞</li>
+<li class="fragment">on-demand</li>
+<li class="fragment">burst workloads</li>
+<li class="fragment">easy</li>
+</lu>
+</section>
+
+<section  data-transition="zoom">
+<h2>Why NOT public clouds?</h2>
+<lu>
+<li class="fragment">How to start?</li>
+<li class="fragment">What about user data?</li>
+<li class="fragment">How to scale automatically?</li>
+<li class="fragment">Multiple management interfaces?</li>
+<li class="fragment">... ?</li>
+</lu>
+</section>
+
+
+<section>
+<h3>Public cloud with</h3><h3> Bright's Cloud Bursting</h3>
+</section>
+
+  
+<section>
+<h2>Cloud Bursting - two types</h2>
+<lu>
+<li>Cluster on Demand</li>
+<li>Cluster Extension</li>
+</lu>
+</section>
+
+
+<section>
+  <h2>Cluster on Demand</h2>
+  <img src="img/cluster-on-demand.png" style="width:60%"/>
+</section>
+
+<section>
+  <h2>Cluster Extension</h2>
+  <img src="img/cluster-extension.png" style="width:60%"/>
+</section>
+
+
+<section>
+<h3>Introduced in Bright 6.0 (2011) </h2>
+</section>
+
+<section>
+<h3>Bright 7.3 makes bursting even easier</h2>
+</section>
+
+<section>
+<h2>Cluster on Demand - in Bright 7.3</h2>
+<lu>
+<li>Easier to set up</li>
+<li>New <u>'cm-cluster-on-demand-aws'</u> tool</li>
+<li>Creates &amp; configures the VPC for you</li>
+<li>Create a cluster on demand from anywhere</li>
+<li>All you need is a Product Key (from customer portal)</li>
+<li>Batch creation of clusters</li>
+</lu>
+</section>
+
+<section >
+  <h2>Cluster on Demand</h2>
+  <img src="img/cluster-on-demand-in-vpc.png" style="width:60%"/>
+</section>
+
+
+
+<section>
+<h2>Cluster extension - in Bright 7.3</h2>
+<lu>
+<li>Easier to setup (one tool, one wizard)</li>
+<li>Easier to understand</li>
+<li>Easier to get started</li>
+</lu>
+</section>
+
+<section>
+  <h2>Cluster extension</h2>
+  <img src="img/bright-in-vpc.png" style="width:50%"/>
+</section>
+
+  <section>
+    <h2>Why Bright for cloud bursting?</h2>
+    <lu>
+      <li class="fragment">it just works</li>      
+      <li class="fragment">seamless feel, management, and monitoring</li>      
+      <li class="fragment">cmsub (moves your data)</li>
+      <li class="fragment">cm-scale-cluster (auto scale, DDC)</li>
+    </lu>
+  </section>
+
+
+  <section>
+    <h2>cmsub</h2>
+    <lu>
+      <li class="fragment">User submit jobs, define in/out data</li>      
+      <li class="fragment">Bright auto transfers input to S3 (AWS)</li>
+      <li class="fragment">Input available to HPC job</li>
+      <li class="fragment">Job gets started... and finishes</li>
+      <li class="fragment">Bright transfers output back to on-prem</li>
+    </lu>
+  </section>
+
+
+  <section>
+    <h2>cm-scale-cluster</h2>
+    <lu>
+
+      <li class="fragment">Bright monitors job queues</li>      
+      <li class="fragment">custom policies determine if more cloud nodes are needed</li>
+      <li class="fragment">if queue_length > x: start_nodes()</li>
+      <li class="fragment">if queue_length &lt; y: stop_nodes()</li>
+
+      
+    </lu>
+  </section>
+
+
+<section>
+<h2>Recap</h2>
+  <ul>
+  <li>2 types of cloud bursting</li>
+  <li>in Bright 7.3 it's even easier</li>
+  <li>cmsub + cm-scale-cluster</li>
+  <li>more cloud providers in the future</li>
+  </ul>
+
+</section>
+ 
+<!-- TODO: CMSUB? -->
+
+
+
+<!----------------------------------------------------------------------------->
+
+
+
+
+<section data-transition="zoom">
+<h1>Part 2</h1>
+<p>Private Clouds<br/>with<br/>Bright OpenStack</p>
+</section>
+ 
+
+<section  data-transition="zoom">
+<h2>Why private clouds?</h2>
+<lu>
+<li class="fragment">Low long-term cost</li>
+<li class="fragment">Consolidate existing infra.</li>
+<li class="fragment">Control & customize</li>
+<li class="fragment">Compliance (data security)</li>
+<li class="fragment">Flexibility</li>
+<li class="fragment">Data locality</li>
+
+</lu>
+</section>
+
+
+
+<section>
+<h3>Which private cloud?</h3>
+</section>
+ 
+
+<section >
+<img width=50% src="img/openstack1.png"/>
+</section>
+
+
+<section >
+<img width=50% src="img/openstack-new-logo.png"/>
+</section>
+
+
+
+
+<section>
+<h2>Why OpenStack clouds?</h2>
+<lu>
+<li class="fragment">Open Source, “Linux for the Cloud”</li>
+<li class="fragment">It has the most momentum</li>
+<li class="fragment">Most mature, most active deployments (CERN)</li>
+<li class="fragment">Private, public, hybrid</li>
+<li class="fragment">Community support: 1000s of contributors</li>
+<li class="fragment">Vendor support: (Dell, Cisco, Red Hat, Cisco, Linux Foundation, Oracle, Huawei, NEC, AT&T, and many more)</li>
+<li class="fragment">Hardware support</li>
+<li class="fragment">Tweakable (customizable backends)</li>
+</lu>
+</section>
+
+
+<section>
+<h3>What is OpenStack?</h3>
+<div class="fragment">
+<img width="40%" src="img/bricks.jpg"/>
+</br>
+Collection of building blocks
+</div>
+</section>
+
+<section>
+<h2>Bulding blocks</h2>
+<lu>
+<li class="fragment">Each is a service</li>
+<li class="fragment">Each offering certain functionality (storage, processing, ...)</li>
+<li class="fragment">Each with it's own, standardized, REST API</li>
+<li class="fragment">Most with several drivers/backends</li>
+<li class="fragment">All working together</li>
+</lu>
+</section>
+
+
+<section >
+<img width="90%" src="img/openstack-architecture0.png"/>
+</section>
+
+<section >
+<img width="90%" src="img/openstack-architecture1.jpg"/>
+</section>
+
+
+
+
+
+<section>
+<h2>OpenStack History</h2>
+<p>Created in 2010 by</p>
+<img width="10%" src="img/nasa-logo.png"/><br/>
+<img width="30%" src="img/rackspace-logo.png"/>
+</section>
+
+
+
+<section>
+<img width="90%" src="img/openstack-big-tent.png"/>
+</section>
+
+
+<section data-transition="zoom">
+<h1>Sounds cool! Let me try!</h1>
+</section>
+
+<section data-transition="zoom">
+<h1>Not so fast!</h1>
+</section>
+
+<section data-transition="zoom">
+<h1>OpenStack is not easy ...</h1>
+<p class="fragment"> The mother of all learning curves</p>
+</section>
+
+
+<section >
+<img width="90%" src="img/openstack-architecture0.png"/>
+</section>
+
+
+
+
+<section >
+<img width="90%" src="img/openstack-architecture2.jpg"/>
+</section>
+
+
+
+<section>
+<h1>Case study</h1>
+<p>OpenStack in health & wellness industry</p>
+<p> color <span style="color:orange">orange</span> == OpenStack</p>
+</section>
+
+<section data-transition="zoom">
+<h1 style="font-size:1em">Deploying OpenStack</h1>
+<img width="70%" src="img/nut-ball.gif"/>
+</section>
+
+<section data-transition="zoom">
+<h1>Why so hard?</h1>
+</section>
+
+
+
+<section>
+<h2>What OpenStack is NOT?</h2>
+<lu>
+<li class="fragment">Not an initial deployment tool</li>
+<li class="fragment">Not the entire ecosystem around the “OpenStack” part (Ceph, HAProxy, AMQP, SQL, ...)</li>
+<li class="fragment">Not deploying, managing and monitoring hardware</li>
+<li class="fragment">Not easy... where to start?</li>
+<li class="fragment">All of those make OpenStack very hard for administrators to deploy and to manage.</li>
+</lu>
+</section>
+
+
+<section>
+<h1>?</h1>
+</section>
+
+
+
+
+<section data-transition="zoom">
+<h1>Bright OpenStack</h1>
+
+<p>OpenStack + everything else</p>
+</section>
+
+<section>
+<h2>Bright OpenStack</h2>
+
+<lu>
+<li class="fragment">OpenStack service (Nova, Glance, Neutron, Keystone ...)</li>
+<li class="fragment">Auxiliary services:</li>
+<lu>
+  <li class="fragment">HAProxy, AMQP</li>
+  <li class="fragment">Galera, Ceph</li>
+</lu>
+
+<li class="fragment">Hardware/software cluster management</li>
+<li class="fragment">Robust deployment mechanism</li>
+<li class="fragment">Monitoring (metrics/healthchecks)</li>
+<li class="fragment">Hardware agnostic</li>
+</lu>
+</section>
+
+<section>
+<h2>Why Bright OpenStack?</h2>
+<lu>
+<li class="fragment">The complete package</li>
+<li class="fragment">No learning curve</li>
+<li class="fragment">Easy, but customizable, flexible</li>
+</lu>
+</section>
+
+
+
+<section data-transition="zoom">
+<h1>End-users</h1>
+</section>
+
+<section data-transition="zoom">
+<img width="70%" src="img/login-openstack-dashboard.jpg"/>
+</section>
+
+<section data-transition="zoom">
+<img width="70%" src="img/horizon-generic.png"/>
+</section>
+
+<section>
+<h2>Horizon - self-provisioning portal</h2>
+user can create/manage:
+<lu>
+<li>Networks (L2 broadcast domain)</li>
+<li>Subnets (L3 IP subnets)</li>
+<li>Routers (connect subnets)</li>
+<li>VM Images (ISO, QCOW, RAW, ...)</li>
+<li>Servers (VMs)  (start/stop/view status)</li>
+<li>Volumes (aux. storage)</li>
+<li>Firewalls</li>
+<li>Security groups</li>
+<li>and more ...</li>
+</lu>
+</section>
+
+
+<section data-transition="zoom">
+<h1>Cloud-admins</h1>
+</section>
+
+<section data-transition="zoom">
+<img  width="90%" src="img/cmgui-vs-dashboard.png"/>
+</section>
+
+
+
+<section>
+<h2>Recap</h2>
+<div  class="fragment">
+<lu>
+<li>OpenStack is a collection of services ... </li>
+<li>... each offering a different function ...</li>
+<li>... and is fully customizable.</li>
+</lu>
+</div>
+<br/>
+<div  class="fragment">
+<li>OpenStack is great, ... yet not easy, not complete.</li>
+<li>Bright solves OpenStack headaches, is complete!</li>
+</div>
+
+</section>
+
+
+<section>
+</section>
+
+
+<!----------------------------------------------------------------------------->
+
+
+
+
+<section>
+<h1>Part 3</h1>
+<p>Hybrid clouds with Bright</p>
+</section>
+   
+<section>
+<h2>Hybrid cloud (def. from Wikipedia)</h2>   
+<lu>
+<li class="fragment">composition of two or more clouds (private, public)</li>
+<li class="fragment">that remain distinct entities</li>
+<li class="fragment">but are bound together</li>
+
+<li class="fragment">to offer benefits of both</li>
+
+</lu>
+<br/>
+<lu>
+<div class="fragment">
+<li>Example</li>
+
+<lu>
+ <li>Use private cloud for flexibily & low cost ...</li>
+ <li>... and move overflow capacity to public cloud</li>
+</lu>
+
+</div>
+
+</lu>
+</section>
+ 
+ 
+<section>
+<h2>Hybrid clouds with Bright?</h2>   
+<lu>
+<li class="fragment">Bright OpenStack + ... </li>
+<li class="fragment"> ... Cluster on Demand (for OpenStack) + ... </li>
+<li class="fragment">AWS (Azure, ...)</li></li>
+</lu>
+</section>
+ 
+ 
+ 
+ 
+    <section>
+       <!-- sneek peek -->
+      <img src="img/bright-cod.png" class="full noborder"/>
+    </section> 
+
+    <section>
+      <h1>COD & Krusty</h1>
+    </section>
+
+    <section>
+    <h2>What we do</h2>
+<lu>
+<li class="fragment">(flexible) Cluster Management Software</li>
+<li class="fragment">We need to test clusters, many of them (R&D, dev, QA, support)</li>
+<li class="fragment">"Krusty the cloud" (dog-fooded Bright OpenStack)</li>
+<li class="fragment">(then, Bright 7.0) Cluster-as-a-Service (CaaS),</li>
+<li class="fragment">(now, Bright 7.3) Cluster on Demand (COD)</li>
+</lu>
+    </section>
+ 
+ 
+     <section>
+      <h1>COD today</h1>
+      <lu>
+<h3>Create clusters rapidly (2 min)</h3>
+</lu>
+      
+      
+    </section>
+ 
+
+   <!----------------------------------->
+    <section data-transition="zoom">
+      <h1>COD for OpenStack Architecture</h1>
+    </section>
+    
+
+    
+    <section data-transition="fade">
+      <img src="img/caas/cc0.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc1.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc2.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc3.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc4.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc5.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc6.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc7.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc8.png" class="full noborder"/>
+    </section>
+  
+    <section data-transition="fade">
+      <img src="img/caas/cc9.png" class="full noborder"/>
+    </section>    
+    <section data-transition="fade">
+      <img src="img/caas/cc10.png" class="full noborder"/>
+    </section>
+ 
+     <section>
+      <h2>COD for OpenStack - implementation</h2>
+      <lu>
+<li class="fragment">User request cluster (requirements)</li>
+<li class="fragment">COD tool constructs a "Heat Template"</li>
+<li class="fragment">Template submitted to OpenStack Heat</li>
+<li class="fragment">Copy-on-write from generic image (Ceph)</li>
+<li class="fragment">Head node customized to user's requirements</li>
+<li class="fragment">Head node is ready</li>
+
+</lu>      
+    </section>
+ 
+      <section>
+      <h2>COD for OpenStack - example</h2>
+      <pre>
+Example usage:
+
+$ cod cluster create my-cluster
+
+Please wait...
+---------------------------------------------------------------------
+   Cluster:   my-cluster
+---------------------------------------------------------------------
+ Image name:   bcmh-centos7u2-7.3-14
+ Image date:   2016-10-24 12:45 (17d 4h ago)
+  Head node:   1 (cod.medium: 4096 RAM, 2 vCPUs))
+   CMD rev.:   34540
+    Version:   7.3
+     Distro:   centos7u2
+      Nodes:   20 (cod.xsmall: 1024 RAM, 1 vCPUs)
+---------------------------------------------------------------------
+Press ENTER to continue and create the cluster.
+Press ctrl+c (or type 'a') to abort. Type 'i' for more info.
+</pre>
+</section>
+
+<section>
+  <h3>COD for HPC-aaS</h3>
+  <p>just works</p>
+</section>
+  
+<section>
+  <h3>COD for XaaS</h3>
+<pre>
+Example usage:
+
+$ cod cluster create my-xaas -n 40 \
+  --internal-cidr 10.1.42/24
+  --node-type m1.medium \
+  --package-groups openstack,ceph \
+  --pass-file configure_my_XaaS \
+  --postbs /root/configure_my_XaaS \
+
+</pre>
+</lu>      
+       
+</section>       
+ 
+ <section>
+<h2>Recap</h2>
+<lu>
+<li class="fragment">Cluster on Demand (COD) for AWS</li>
+<li class="fragment">Cluster on Demand (COD) for Bright OpenStack</li>
+<li class="fragment">Virtual COD clusters can extend to public cloud</li>
+<li class="fragment">You can use COD for HPC-aas (and XaaS)</li>
+</lu>
+</section>
+
+ 
+
+
+
+<section data-transition="zoom">
+<!-- empty on purpose -->
+
+</section>
+
+<section>
+<h2>Three takeways</h2>
+<lu>
+<li class="fragment">Bright -> complete solution for consuming clouds</li>
+<li class="fragment">Bright Cloud Bursting -> seamless cloud consumption</li>
+<li class="fragment">Bright OpenStack -> complete OpenStack solution</li>
+</lu>
+</section>
+
+<section data-transition="zoom">
+  <h1>Thank you, questions?</h1>
+</section>
+  
+
+
+<!-- CEPH -->
+    
+  </div>
+
+  <div class="footer">
+    
+  </div>
+
+  <script src="js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+
+  <script src="js/this.js"></script>
+
+  </body>
+</html>
+
+

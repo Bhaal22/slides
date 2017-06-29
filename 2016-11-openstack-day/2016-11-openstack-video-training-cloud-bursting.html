@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>BUG - Cloud Update</title>
+
+    <meta name="author" content="Piotr Wachowicz" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="css/zenburn.css">
+    <link rel="stylesheet" href="css/openstack.css" id="theme">
+    
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href =
+        window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' :
+          'css/print/paper.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--script src="js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/this.js"></script-->
+  </head>
+<body>
+
+  <div class="reveal"><div class="slides">
+  <section data-transition="zoom">
+<h1>Cloud Bursting</h1>
+<p>with Bright</p>
+</section>
+
+
+
+<section>
+<h2>Outline</h2>
+<lu>
+<li>Cloud Bursting - two ways:</li>
+  <lu>
+
+  <li>Cluster on demand </li>
+  <li>Cluster extension</li>
+
+  </lu>
+
+</lu>
+</section>
+
+  
+<section  data-transition="zoom">
+<h1>On demand<br/>vs<br/>extension</h1>
+</section>
+
+
+<section>
+  <h2>Cluster on demand</h2>
+  <img src="img/cluster-on-demand.png" style="width:50%"/>
+</section>
+
+<section>
+  <h2>Cluster extension</h2>
+  <img src="img/cluster-extension.png" style="width:60%"/>
+</section>
+
+
+
+
+
+
+
+
+<section  data-transition="zoom">
+<h1>Cluster extension</h1>
+<p>(to AWS)</p>
+</section>
+
+<section>
+  <h2>EC2-classic</h2>
+  <img src="img/ec2-classic-basics.png" style="width:50%"/>
+</section>
+
+<section>
+  <h2>VPC (a.k.a EC2-VPC) </h2>
+  <img src="img/vpc-basics.png" style="width:50%"/>
+</section>
+
+<section>
+  <h2>Cluster extension</h2>
+  <img src="img/bright-in-vpc.png" style="width:50%"/>
+</section>
+
+
+<section  data-transition="zoom">
+<h1>Cluster on demand</h1>
+<ul>
+<li>In AWS</li>
+<li>In OpenStack</li>
+<li>In ...</li>
+</ul>
+</section>
+
+
+
+
+<section  data-transition="zoom">
+<h1>Cluster on demand</h1>
+<p>(in AWS)</p>
+</section>
+
+<section>
+  <h2>Cluster on demand (COD)</h2>
+  <img src="img/cluster-on-demand-in-vpc.png" style="width:50%"/>
+</section>
+
+<section>
+<h2>Creating a (COD) in AWS</h2>
+<ul>
+<li class="fragment">use our AMI, or</li>
+<li class="fragment">use cm-cluster-on-demand-aws</li>
+</ul>
+</section>
+
+
+<section  data-transition="zoom">
+<h1>Cluster on demand</h1>
+<p>for OpenStack</p>
+</section>
+
+<section>
+<h2>Cluster on demand (COD) </h2>
+  <img src="img/bright-cod.png" style="width:50%"/>
+</section>
+
+<section data-transition="appear">
+  <img src="img/caas/cc0.png" style="width:80%"/>
+</section>
+<section data-transition="appear">
+  <img src="img/caas/cc1.png" style="width:80%"/>
+</section>
+<section data-transition="appear">
+  <img src="img/caas/cc2.png" style="width:80%"/>
+</section>
+<section data-transition="appear">
+  <img src="img/caas/cc3.png" style="width:80%"/>
+</section>
+<section data-transition="appear">
+  <img src="img/caas/cc4.png" style="width:80%"/>
+</section>
+<section data-transition="appear">
+  <img src="img/caas/cc5.png" style="width:80%"/>
+</section>
+<section data-transition="appear">
+  <img src="img/caas/cc6.png" style="width:80%"/>
+</section>
+<section data-transition="appear">
+  <img src="img/caas/cc7.png" style="width:80%"/>
+</section>
+<section data-transition="appear">
+  <img src="img/caas/cc8.png" style="width:80%"/>
+</section>
+<section data-transition="appear">
+  <img src="img/caas/cc9.png" style="width:80%"/>
+</section>
+<section data-transition="appear">
+  <img src="img/caas/cc10.png" style="width:80%"/>
+</section>
+
+
+
+<section>
+Thank you
+</section>
+  
+
+
+<!-- CEPH -->
+    
+  </div>
+
+  <div class="footer">
+    
+  </div>
+
+  <script src="js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+
+  <script src="js/this.js"></script>
+
+  </body>
+</html>
+
+

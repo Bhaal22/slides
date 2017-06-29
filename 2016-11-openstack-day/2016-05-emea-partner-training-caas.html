@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>EMEA partner training</title>
+
+    <meta name="author" content="Piotr Wachowicz" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="css/zenburn.css">
+    <link rel="stylesheet" href="css/openstack.css" id="theme">
+    
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href =
+        window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' :
+          'css/print/paper.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--script src="js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/this.js"></script-->
+  </head>
+<body>
+
+  <div class="reveal"><div class="slides">
+
+
+    <section data-transition="zoom">
+      <h1>OpenStack Training</h1>
+      <p>Cluster-as-a-Service</p>
+      <p><i>Piotr Wachowicz<br/></i></p>
+
+    </section>
+    
+
+    <section>
+      <h1>Clouds are cool, however...</h1>
+      <p class="fragment">... there's a gap in the 'as a service' approach.</p>
+    </section>
+    
+    <section>
+    <h2>The gap</h2>
+    <p></p>
+    
+    <table>
+      <thead>
+        <tr>
+        <th>we have</th>
+        <th>&nbsp;&nbsp;&nbsp;gap&nbsp;&nbsp;&nbsp;</th>
+        <th>(power) users want</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td class="fragment">
+        <p>
+        Sahara (Hadoop as a Service)<br/>
+        Magnum (Containers ...)<br/>
+        Murano (Application catalog)</br>
+        ...
+        </p>
+        </td>
+        <td></td>
+        <td class="fragment">
+        better monitoring</br>
+        power</br>
+        flexibility</br>
+        freedom</br>
+        speed</br>
+        x-interaction</br>
+        Anything as a service (XaaS)</br>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    
+    </section>
+
+    <!----------------------------------->
+    <section data-transition="zoom">
+    <h1><u>Cluster-as-a-service</u><br/> closes that gap</h1>
+    </section>
+    
+
+    <!----------------------------------->
+    
+     <section>
+      <h2>Agenda</h2>
+      <div class="fragment">
+      <lu>
+        <li>Cluster-as-a-Service from 10,000ft</li>
+        <li>Usecases</li>
+        <li>Clusters 101</li>
+        <li>Cluster-as-a-service from 1,000ft</li>
+        <lu>
+          <li>Architecture</li>
+          <li>Implementation</li>
+        </lu>
+        <li>Q&A</li>
+      </lu>
+      </div>
+    </section>
+
+    <!----------------------------------->
+    <section data-transition="zoom">
+    <h1> 10,000ft </h1>
+    </section>
+    
+    <section>
+      <h2>What is CaaS? It allows you to:</h2>
+      
+      
+      <lu>
+        <li class="fragment">provision entire environments (clusters)...</li>
+        <li class="fragment">...  HPC, Hadoop, Spark, OpenStack, Ceph, ...</li>
+        <li class="fragment">... with advanced management, rescaling...</li>
+        <li class="fragment">... monitoring, alerting...</li>
+        <li class="fragment">... and one pane of glass to rule them all.</li>
+      </lu>
+      
+      
+      <div class="fragment">
+      <h2>Example</h2>
+      <p>Deploy Spark, Hadoop on the same virtual cluster (same set of VMs). Add Ceph and OpenStack. Extend.</p>
+      </div>
+    </section>
+    
+
+    <section>
+      <img src="img/hadoop/overview0.png" class="full"/>
+    </section>
+
+    <section>
+      <img src="img/kubernetes/overview0.png" class="full"/>
+    </section>
+    
+    <section>
+      <img src="img/cmgui-mon.png" class="full"/>
+    </section>
+
+    
+    
+    
+    <section>
+      <h2>The big deal?</h2>
+      <div class="fragment">
+      <lu>
+        <li>saves times (entire cluster in minutes)</li>
+        <lu>
+          <li>500-node Bright OpenStack cluster</li>
+        </lu>
+        <li>agility</li>
+        <li>correlate metrics between components</li>
+        <li>empower the users (flexibility)</li>
+        <li>consolidate and isolate (compliance)</li>
+        <li>easily scale (e.g. add HDFS, or Ceph OSD vms)</li>
+      </lu>
+      </div>
+    </section>
+    
+
+    <!----------------------------------->
+    <section data-transition="zoom">
+      <h1>Our usecase</h1>
+    </section>
+
+    <section>
+      <h2>Cluster management software</h2>
+      <lu>
+        <li class="fragment">Bright OpenStack (Bright Cluster Manager)</li>
+        <li class="fragment">Turns a pile of hardware into a fully functional HPC/Hadoop/OpenStack/X cluster</li>
+        <li class="fragment">Used by hundreds of customers</li>
+        <li class="fragment">Deploy, manage, monitor entire stack</li>
+        <li class="fragment">(from physical hardware, up to services in VMs)</li>
+      </lu>
+    </section>
+    
+    <section>
+      <h2>Why CaaS? Clusters, clusters, clusters... </h2>
+      <p> ... for Dev, QA, Support, etc.</p>
+      <div class="fragment">
+      <lu>
+        <li>5+ years ago: physical machines</li>
+        <li>5 years ago: kvm + scripts</li>
+        <li>2 years ago: Bright OpenStack + scripts</li>
+      </lu>
+      </div>
+    
+      <h2 class="fragment">Turns out many of our customers have similar needs</h2>
+        <p class="fragment">now: OpenStack + Heat + CaaS (Cluster-as-a-service)</p>
+    </section>
+    
+    <section>
+      <img src="img/hadoop/overview0.png" class="full"/>
+    </section>
+    
+    <section>
+      <img src="img/hadoop/edit-spark0.png" class="full"/>
+    </section>
+    
+    <section>
+      <img src="img/cmgui-mon-os1.png" class="full"/>
+    </section>
+    
+    <section>
+      <img src="img/cmgui-mon.png" class="full"/>
+    </section>
+    
+    
+
+    <section>
+      <img src="img/cmgui-vs-dashboard.png" class="full"/>
+    </section>
+
+    
+    <section>
+      <h2>Other usecases</h2>
+      <div class="fragment">
+      <lu>
+        <li>Training environments</li>
+        <li>R&D</li>
+        <li>Virtualized labs</li>
+        <li>Security, compliance (e.g. sensitive data in HPC)</li>
+        <li>Demanding users</li>
+        <li>Hybrid HPC (same workload across physical and virtual)</li>
+      </lu>
+      </div>
+    </section>
+    
+   
+
+
+    <!----------------------------------->
+    <section data-transition="zoom">
+      <h1>Clusters 101</h1>
+    </section>
+
+    <section data-backgroundX="#FFCECE" data-background-transitionX="zoom">
+      <h2>Clusters</h2>
+      <p><i>(wikipedia) A computer cluster consists of a set of loosely or tightly connected computers that work together so that, (...), they can be viewed as a single system.
+      </i></p>
+      <lu>
+        <li class="fragment">cluster = Headnode(s) + general purpose nodes</li>
+        <li class="fragment">cluster = Headnode(s) + compute(HPC) / Hypervisor(kvm) / storage(ceph) /... nodes</li>
+      </lu>
+      <h2 class="fragment">Clusters need to be managed</li></h2>
+    </section>
+    
+    <section data-transition="fade">
+    <img src="img/b0.png"  width="80%" height="80%"/>
+    </section>
+    <section data-transition="fade">
+    <img src="img/b1.png" width="80%" height="80%"/>
+    </section>
+    <section data-transition="fade">
+    <img src="img/b2.png" width="80%" height="80%"/>
+    </section>
+    
+
+    
+    <!----------------------------------->
+    <section data-transition="zoom">
+      <h1>Using Cluster-as-a-service <br/> (CaaS)</h1>
+      <p>CaaS is a platform for XaaS</p>
+    </section>
+    
+    <section>
+      <table>
+      <thead>
+        <tr>
+        <th>distro</th>
+        <th>packages</th>
+        <th>cluster manager</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td class="fragment">
+        Red Hat 6.0-7.1<br/>
+        CentOS 6.0-7.1<br/>
+        SL 6.0-7.1<br/>
+        SLES 11 sp1-4<br/>
+        SLES 12<br/>
+        </td>
+        <td class="fragment">
+        HPC packages</br>
+        Hadoop</br>
+        Spark</br>
+        Ceph + Kubernetes</br>
+        OpenStack</br>
+        OpenStack + Ceph</br>
+        OpenStack + Ceph + Hadoop</br>
+        default (R&D)</br>
+        ...
+        </td>
+        <td class="fragment">
+        BCM 6.0</br>
+        BCM 7.0</br>
+        BCM 7.1</br>
+        BCM trunk</br>
+        ...
+        </td>
+      </tr>
+      </tbody>
+      </table>
+
+      <pre class="fragment">
+Example usage:
+$ os_cluster create -m m1.large -s m1.medium -n 2 pw-cluster \
+  CENTOS7u1 \
+  7.1 -x disklayout-head.xml \
+  --extra-packages openstack \
+  --on-boot-script myscript.py 
+$ # wait 20-30min, grab a coffee
+$ ssh root@pw-cluster
+      </pre>
+    </section>
+
+    
+
+    
+    <section>
+      <img src="img/caas-dashboard1.png" class="full"/>
+    </section>
+    <section>
+      <img src="img/caas-dashboard2.png" class="full"/>
+    </section>
+
+    
+    <section>
+      <h2>Anything-as-a-service</h2>
+      <p> CaaS + X = XaaS</p>
+      
+      <p class="fragment">e.g. CaaS + Hadoop = Hadoop-aaS</p>
+      <div   class="fragment">
+        <lu>
+          <li>OpenStack as a service</li>
+          <li>Ceph as a service </li>
+          <li>HPC ...</li>
+          <li>Kubernetes ...</li>
+        </lu>
+      </div>
+    </section>
+    
+    <section>
+      <h2>Example: HPC-as-a-service (HPC-aaS)</h2>
+      <p>Every on-demand cluster comes with</p>
+      <lu>
+        <li>Libraries (e.g. MPI, OpenMP, CUDA)</li>
+        <li>Tools, compilers (e.g. GCC, Intel)</li>
+        <li>Workload managers (e.g. Slurm, LSF, Torque, Grid Engine)</li>
+      </lu>
+    </section>
+    
+    <section>
+      <h2>Example: Kubernetes-as-a-service </h2>
+      <p></p>
+      <lu>
+        <li>Deployed and preconfigured Kubernetes</li>
+        <li>Transparent pod networking config (flanneld)</li>
+        <li>Automatic deployment of pods</li>
+        <li>Easily scalable</li>
+      </lu>
+    </section>
+
+
+    
+    <!----------------------------------->
+    <section data-transition="zoom">
+      <h1>1,000ft</h1>
+    </section>
+    
+    <!----------------------------------->
+    <section data-transition="zoom">
+      <h1>CaaS Architecture</h1>
+    </section>
+
+    
+    <section data-transition="fade">
+      <img src="img/caas/cc0.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc1.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc2.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc3.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc4.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc5.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc6.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc7.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc8.png" class="full noborder"/>
+    </section>
+    
+    <section data-transition="fade">
+      <img src="img/caas/cc9.png" class="full noborder"/>
+    </section>
+    
+    <section data-transition="fade">
+      <img src="img/caas/cc10.png" class="full noborder"/>
+    </section>
+    
+    <!----------------------------------->
+
+    <!---
+    <section data-transition="zoom">
+      <h1>Live demo</h1>
+      <img src="http://38.media.tumblr.com/0719ab81a3f36c9e62edd1f22c985e46/tumblr_nijemuu7291rnma1do1_400.gif"/>
+    </section>
+    -->
+        
+    <section data-transition="zoom">
+      <h1>Implementation</br></h1><p>How it's made</p>
+    </section>
+    
+    <section>
+      <h2>Implementation (physical layer)</h2>
+      <p>OpenStack + Ceph* + Heat + python </p>
+      <lu>
+        <li>user runs a script (or Horizon)</li>
+        <li>script creates a Heat stack</li>
+        <li>stack passed to Heat (create infra)</li>
+        <li>install virtual Headnode</li>
+        <lu>
+        <li>PXE from physical cluster, or</li>
+        <li>use a pre-provisioned Cinder Volume (CoW)</li>
+        </lu>
+        <li>install virtual nodes (PXE from virtual headnode)</li>
+        <li>(XaaS) customize generic cluster (e.g. install Hadoop and OpenStack)</li>
+      </lu>
+    </section>
+  
+    <section>
+      <h1>Questions?</h1>
+      <p>(thank you!)</p>
+      <p>www.brightcomputing.com</p>
+    </section>
+    
+    
+    
+    <!----------------------------------->
+    <section>
+      <h1>Bonus slides</h1>
+    </section>
+    
+    <section>
+      <br/>
+      <h2>How? Krusty the cloud</h2>
+      <lu>
+        <li>Our own, dogfooded, R&D and QA, Ceph/OpenStack based, cloud</li>
+        <li>18 nodes</li>
+        <lu>
+          <li>~3 controller/network nodes (kvm)</li>
+          <li>17 hypervisor nodes (kvm)</li>
+          <li>7 ceph OSD nodes, 3 ceph-mons</li>
+        </lu>
+        <li>~400 vms, across ~100 virtual clusters (HPC, Hadoop, OpenStack, Ceph, Spark, ...)</li>
+      </lu>
+    </section>
+    
+    <section>
+    <h1>Ceph's role</h1>
+    <ul>
+      <li>single storage backend</li>
+      <li>ceph used for Glance, Nova, Cinder</li>
+      <li>copy-on-write of snapshots/volumes</li>
+      <li>ceph FS is coming (and so is easy sharing data between clusters)</li>
+      <li>cluster snapshots (nightly builds)</li>
+      <li>live migration (don't mix shared/non-shared backends)</li>
+    </ul>
+    </section>
+    
+    
+  </div>
+
+  <div class="footer">
+    OpenStack CaaS
+  </div>
+
+  <script src="js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+
+  <script src="js/this.js"></script>
+
+  </body>
+</html>
+
+

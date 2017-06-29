@@ -1,0 +1,220 @@
+description: cluster-on-demand
+heat_template_version: '2013-05-23'
+resources:
+  bright_setup_config:
+    properties:
+      cloud_config:
+        disable_ec2_metadata: true
+        runcmd: [/usr/bin/chmod +x /cm/node-installer/pre-initialize-script, /cm/local/apps/cluster-tools/bin/cm-bright-setup
+            -c /root/cm/cm-bright-setup.conf]
+        write_files:
+        - {content: "modules:\n  brightsetup:\n    amazon:\n      access_key: ''\n\
+            \      account_id: ''\n      extra_disks:\n      - letter: b\n       \
+            \ partitions:\n        - {fs_type: ext3, mount_point: /mnt, size: 50}\n\
+            \      nodes:\n        base_name: cnode\n        count: 3\n        storage:\
+            \ {size: 42, type: EBS}\n        type: m3.medium\n      secret_key: ''\n\
+            \      username: ''\n    bright:\n      hostname: jm-c-11-01-t-c7u2-fou\n\
+            \      license: {cluster_name: jm-c-11-01-t-c7u2-fou, country: US, locality:\
+            \ not specified,\n        organization: not specified, product_key: 033943-240350-544404-226545-387902,\n\
+            \        state: not specified, unit: not specified}\n      master_compute_node:\
+            \ false\n      node_count: 3\n      node_disk_setup_path: /root/cm/node-disk-setup.xml\n\
+            \      node_kernel_modules: [virtio_net, virtio_pci, virtio_blk]\n   \
+            \   password: system\n      pbspro_lic_server: ''\n      timezone: Europe/Amsterdam\n\
+            \      wlm: ''\n      wlm_slot_count: 1\n    cloud_type: openstack\n",
+          path: /root/cm/cm-bright-setup.conf}
+        - {content: '<?xml version="1.0" encoding="ISO-8859-1"?><!-- This is the CoD
+            OpenStack default --><!-- One swap partition and the rest of the filesystem
+            on 1 partition --><diskSetup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  <device>    <blockdev>/dev/sdb</blockdev>    <blockdev>/dev/hdb</blockdev>    <blockdev>/dev/vdb</blockdev>    <blockdev>/dev/xvdb</blockdev>  <blockdev
+            mode="cloud">/dev/sdb</blockdev><blockdev mode="cloud">/dev/hdb</blockdev><blockdev
+            mode="cloud">/dev/vdb</blockdev><blockdev mode="cloud">/dev/xvdb</blockdev><blockdev
+            mode="cloud">/dev/xvdf</blockdev> <partition id="a2">      <size>max</size>      <type>linux</type>      <filesystem>xfs</filesystem>      <mountPoint>/</mountPoint>      <mountOptions>defaults,noatime,nodiratime</mountOptions>    </partition>  </device></diskSetup>',
+          path: /root/cm/node-disk-setup.xml}
+        - {content: '#!/bin/bash
+
+            # This script was created by cloud-config from cluster-on-demand
+
+            # it is not part of the RPM
+
+            set -x
+
+            set -e
+
+            ip l set dev eth1 up
+
+            dhclient eth1
+
+            wget http://169.254.169.254/latest/meta-data/hostname -O /tmp/force-hostname
+
+            killall dhclient  # otherwise script goes to defunct in pre 8.0
+
+            ip l set dev eth1 down
+
+            cp /tmp/force-hostname /tmp/force-hostname.orig
+
+            sed -i ''s|.*-\([a-zA-Z0-9].*\)\..*|\1|''  /tmp/force-hostname
+
+            ', path: /cm/node-installer/pre-initialize-script}
+    type: OS::Heat::CloudConfig
+  floating_ip:
+    properties:
+      floating_network_id: d850f19d-55c3-4a00-ba57-ee8bc959f84e
+      port_id: {get_resource: head_external_port}
+    type: OS::Neutron::FloatingIP
+  head_external_port:
+    properties:
+      network_id: 2130a653-9c55-4e84-a108-6559b703fd03
+      replacement_policy: AUTO
+      security_groups:
+      - {get_resource: jm-c-11-01-t-c7u2-fou_head_sg}
+    type: OS::Neutron::Port
+  head_internal_port:
+    properties:
+      fixed_ips:
+      - ip_address: 10.141.255.254
+        subnet_id: {get_resource: internal_net_sn}
+      network_id: {get_resource: internal_net}
+      port_security_enabled: false
+      replacement_policy: AUTO
+      security_groups: []
+    type: OS::Neutron::Port
+  internal_net: {type: 'OS::Neutron::Net'}
+  internal_net_sn:
+    properties:
+      cidr: 10.141.0.0/16
+      enable_dhcp: false
+      ip_version: 4
+      network_id: {get_resource: internal_net}
+    type: OS::Neutron::Subnet
+  jm-c-11-01-t-c7u2-fou:
+    depends_on: [root_volume]
+    properties:
+      block_device_mapping:
+      - device_name: vdb
+        volume_id: {get_resource: root_volume}
+      flavor: 2c1f1e40-6e9c-435f-a8f4-f2f4b800b8ab
+      image: Bright-COD-headnode-bootloader
+      key_name: jm-cod-key
+      name: jm-c-11-01-t-c7u2-fou
+      networks:
+      - port: {get_resource: head_internal_port}
+      - port: {get_resource: head_external_port}
+      user_data: {get_resource: bright_setup_config}
+      user_data_format: RAW
+    type: OS::Nova::Server
+  jm-c-11-01-t-c7u2-fou_head_sg:
+    properties:
+      description: 'jm-c-11-01-t-c7u2-fou: head node security group'
+      name: jm-c-11-01-t-c7u2-fou_head_sg
+      rules:
+      - {direction: ingress, port_range_max: 22, port_range_min: 22, protocol: tcp,
+        remote_ip_prefix: 0.0.0.0/0}
+      - {direction: ingress, port_range_max: 22, port_range_min: 22, protocol: udp,
+        remote_ip_prefix: 0.0.0.0/0}
+      - {direction: ingress, port_range_max: 8081, port_range_min: 8081, protocol: tcp,
+        remote_ip_prefix: 0.0.0.0/0}
+      - {direction: ingress, port_range_max: 8081, port_range_min: 8081, protocol: udp,
+        remote_ip_prefix: 0.0.0.0/0}
+    type: OS::Neutron::SecurityGroup
+  jm-c-11-01-t-c7u2-fou_slave_sg:
+    properties:
+      description: 'jm-c-11-01-t-c7u2-fou: slave node security group'
+      name: jm-c-11-01-t-c7u2-fou_slave_sg
+      rules: []
+    type: OS::Neutron::SecurityGroup
+  node001:
+    properties:
+      block_device_mapping:
+      - device_name: vdb
+        volume_id: {get_resource: node001_root_volume}
+      flavor: 5a937b46-7e89-4042-a542-4b7b55c48494
+      image: dec83826-0ec0-4d6f-a4ff-66b16e47b9b0
+      name: jm-c-11-01-t-c7u2-fou_node001
+      networks:
+      - port: {get_resource: node001_port}
+      - port: {get_resource: node001_external_port}
+    type: OS::Nova::Server
+  node001_external_port:
+    properties:
+      network_id: 2130a653-9c55-4e84-a108-6559b703fd03
+      replacement_policy: AUTO
+      security_groups:
+      - {get_resource: jm-c-11-01-t-c7u2-fou_slave_sg}
+    type: OS::Neutron::Port
+  node001_port:
+    properties:
+      fixed_ips:
+      - {ip_address: 10.141.0.1}
+      network_id: {get_resource: internal_net}
+      port_security_enabled: false
+      replacement_policy: AUTO
+      security_groups: []
+    type: OS::Neutron::Port
+  node001_root_volume:
+    properties: {size: 10}
+    type: OS::Cinder::Volume
+  node002:
+    properties:
+      block_device_mapping:
+      - device_name: vdb
+        volume_id: {get_resource: node002_root_volume}
+      flavor: 5a937b46-7e89-4042-a542-4b7b55c48494
+      image: dec83826-0ec0-4d6f-a4ff-66b16e47b9b0
+      name: jm-c-11-01-t-c7u2-fou_node002
+      networks:
+      - port: {get_resource: node002_port}
+      - port: {get_resource: node002_external_port}
+    type: OS::Nova::Server
+  node002_external_port:
+    properties:
+      network_id: 2130a653-9c55-4e84-a108-6559b703fd03
+      replacement_policy: AUTO
+      security_groups:
+      - {get_resource: jm-c-11-01-t-c7u2-fou_slave_sg}
+    type: OS::Neutron::Port
+  node002_port:
+    properties:
+      fixed_ips:
+      - {ip_address: 10.141.0.2}
+      network_id: {get_resource: internal_net}
+      port_security_enabled: false
+      replacement_policy: AUTO
+      security_groups: []
+    type: OS::Neutron::Port
+  node002_root_volume:
+    properties: {size: 10}
+    type: OS::Cinder::Volume
+  node003:
+    properties:
+      block_device_mapping:
+      - device_name: vdb
+        volume_id: {get_resource: node003_root_volume}
+      flavor: 5a937b46-7e89-4042-a542-4b7b55c48494
+      image: dec83826-0ec0-4d6f-a4ff-66b16e47b9b0
+      name: jm-c-11-01-t-c7u2-fou_node003
+      networks:
+      - port: {get_resource: node003_port}
+      - port: {get_resource: node003_external_port}
+    type: OS::Nova::Server
+  node003_external_port:
+    properties:
+      network_id: 2130a653-9c55-4e84-a108-6559b703fd03
+      replacement_policy: AUTO
+      security_groups:
+      - {get_resource: jm-c-11-01-t-c7u2-fou_slave_sg}
+    type: OS::Neutron::Port
+  node003_port:
+    properties:
+      fixed_ips:
+      - {ip_address: 10.141.0.3}
+      network_id: {get_resource: internal_net}
+      port_security_enabled: false
+      replacement_policy: AUTO
+      security_groups: []
+    type: OS::Neutron::Port
+  node003_root_volume:
+    properties: {size: 10}
+    type: OS::Cinder::Volume
+  root_volume:
+    properties: {image: c5a5ec1e-040e-46bb-92ca-67a5504c556f, size: '25'}
+    type: OS::Cinder::Volume
+

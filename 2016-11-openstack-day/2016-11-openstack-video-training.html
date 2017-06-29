@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Video recording</title>
+
+    <meta name="author" content="Piotr Wachowicz" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="css/zenburn.css">
+    <link rel="stylesheet" href="css/openstack.css" id="theme">
+    
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href =
+        window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' :
+          'css/print/paper.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--script src="js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/this.js"></script-->
+  </head>
+<body>
+
+  <div class="reveal"><div class="slides">
+
+    
+  
+    <section data-transition="zoom">
+      <h1>Video Training Deck OpenStack</h1>
+    <p>2016-11-2</p>
+    </section>
+    
+    <section>
+    <h2>Sections</h2>
+      <lu>     
+        <li>Intro to Clouds and OpenStack</li>
+        <li>Intro to Ceph</li> <!--todo-->
+        
+        <li>Deep Dive to OpenStack</li>
+        <li>Designing a good Ceph/OpenStack cluster</li>
+        
+        <li>Hands on with OpenStack Horizon</li>
+        <li>Hands on with CMGUI for OpenStack</li>
+      </lu>
+    </section>
+    
+    
+    <!-- FOO -->
+    <section data-transition="zoom">
+    <h1>Introduction to Clouds <br/>and<br/>Bright OpenStack</h1>
+    </section>
+    
+    <section>
+    <h2>Outline</h2>
+      <lu>
+          <li class="fragment">Why clouds?</li>
+          <li class="fragment">Why OpenStack clouds?</li>
+          <li class="fragment">Why Bright OpenStack clouds?</li>
+      </lu>
+    </section>
+    
+    <section data-transition="zoom">
+      <h1>Clouds</h1>
+    </section>
+    
+
+    <section>
+      <h2>What are clouds?</h2>
+      <lu>
+        <li class="fragment">Collections of resources/services ...</li>
+        <li class="fragment">... which are easy to consume.</li>
+      </lu>
+      <br/>
+      <lu>
+          <li class="fragment">Either public ...</li>
+        <li class="fragment">or private.</li>
+        </lu>
+    </section>
+    
+    
+    <section>
+      <h2>Why clouds?</h2>
+      <lu>
+        <li class="fragment">Sharing physical HW resources (lower costs) </li>
+        <li class="fragment">Virtualized resources (saved time)</li>
+        <li class="fragment">Easy prototyping of ideas (creativity)</li>
+        <li class="fragment">People can focus on innovation, not reinventing the wheel (productivity)</li>
+      </lu>
+    </section>
+    
+<section>
+<h2> Why cloud cont.?</h2>
+<p style="text-align:left">
+example: Research team has a cool idea.</li>
+</p>
+<lu>
+<li class="fragment">Traditionally (no cloud involved):</li>
+<li class="fragment">hardware, networking , switches, VLANs, Firewall, Test, debug, test, debug, test, debug...</li>
+<li class="fragment">Weeks later</li>
+<li class="fragment">Start the research</li>
+<li class="fragment">NOT OPTIMAL</li>
+</lu>
+<p style="text-align:left">
+</section>
+
+
+<section>
+<h2>Solution -> Cloud</h2>
+<p style="text-align:left">
+
+</p>
+<lu>
+<li class="fragment">Log in to the cloud's web interfaces</li>
+<li class="fragment">Self-provision resources</li>
+<li class="fragment">Take a sip of coffee</li>
+<li class="fragment">Start the research</li>
+</section>
+
+
+
+<section>
+<h1>Which cloud?</h1>
+</section>
+
+
+<section  data-transition="zoom">
+<h1>public?</h1>
+</section>
+
+<section  data-transition="zoom">
+<img width=50% src="img/aws-logo.png"/>
+</section>
+
+<section  data-transition="zoom">
+<img width=50% src="img/azure-logo.png"/>
+</section>
+
+<section  data-transition="zoom">
+<img width=50% src="img/google-cloud-platform.jpg"/>
+</section>
+
+<section  data-transition="zoom">
+<img width=50% src="img/rackspace-logo.png"/>
+</section>
+
+<section  data-transition="zoom">
+<h1>private?</h1>
+</section>
+
+<section  data-transition="zoom">
+<img width=50% src="img/openstack-new-logo.png"/>
+</section>
+
+
+
+<section  data-transition="zoom">
+<h1>OpenStack Clouds</h1>
+</section>
+
+
+
+    
+<section>
+<h2>Why OpenStack clouds?</h2>
+<lu>
+<li class="fragment">Open Source, “Linux for the Cloud”</li>
+<li class="fragment">It has the most momentum</li>
+<li class="fragment">Most mature, most active deployments (CERN -> LHC)</li>
+<li class="fragment">Both Private and Public clouds, or mix of both (hybrid)</li>
+<li class="fragment">Community support</li>
+<li class="fragment">Thousands of active contributors</li>
+<li class="fragment">Vendor support: (Dell, Cisco, HP, Red Hat, Cisco, Linux Foundation, Oracle, Huawei, NEC, AT&T, and many more)</li>
+<li class="fragment">Hardware support (customizable backends)</li>
+</lu>
+</section>
+
+
+<section>
+<h1>What is OpenStack?</h1>
+<div class="fragment">
+Collection of building blocks
+</div>
+</section>
+
+<section>
+<h2>Bulding blocks</h2>
+<lu>
+<li class="fragment">Each with it's own REST API</li>
+<li class="fragment">Each offering certain functionality (storage, processing, ...)</li>
+<li class="fragment">All working together</li>
+</lu>
+</section>
+
+
+<section>
+<h2>OpenStack History</h2>
+<p>Created in 2010 by</p>
+<img width="10%" src="img/nasa-logo.png"/><br/>
+<img width="30%" src="img/rackspace-logo.png"/>
+</section>
+
+
+
+<section data-transition="zoom">
+<img width="90%" src="img/openstack-architecture0.png"/>
+</section>
+
+<section data-transition="zoom">
+<img width="90%" src="img/openstack-big-tent.png"/>
+</section>
+
+
+<section data-transition="zoom">
+<h1>Sounds cool! Let me try!</h1>
+</section>
+
+<section data-transition="zoom">
+<h1>Not so fast!</h1>
+</section>
+
+
+<section data-transition="zoom">
+<img width="90%" src="img/happy-cloud.jpg"/>
+</section>
+
+<section data-transition="zoom">
+<h1>OpenStack is the mother ...</h1>
+
+<h1 class="fragment">.. of all learning curves</h1>
+</section>
+
+
+<section>
+<h2>What OpenStack is NOT?</h2>
+<lu>
+<li class="fragment">Not a initial deployment tool</li>
+<li class="fragment">Not the entire ecosystem around the “OpenStack” part</li>
+<li class="fragment">Not deploying, managing and monitoring hardware</li>
+</lu>
+</section>
+
+<section>
+<h2>What OpenStack is NOT (2)?</h2>
+<lu>
+<li class="fragment">No robust data storage system</li>
+<li class="fragment">No auxiliary third-party services needed by OpenStack are included (HAProxy, AMQP, Databases, etc). They need to be installed separately</li>
+<li class="fragment">Not easy... where to start?</li>
+<li class="fragment">All of those make OpenStack very hard for administrators to deploy and to manage.</li>
+</lu>
+</section>
+
+
+
+<section>
+<h1>??</h1>
+</section>
+
+
+
+
+<section data-transition="zoom">
+<h1>Bright OpenStack</h1>
+
+<p>OpenStack + everything else</p>
+</section>
+
+<section>
+<h2>Bright OpenStack</h2>
+
+<lu>
+<li class="fragment">OpenStack service (Nova, Glance, Neutron, Keystone ...)</li>
+<li class="fragment">Auxiliary services:</li>
+<lu>
+  <li class="fragment">HAProxy, AMQP</li>
+  <li class="fragment">Galera, Ceph</li>
+</lu>
+
+<li class="fragment">Hardware/software cluster management</li>
+<li class="fragment">Robust deployment mechanism</li>
+<li class="fragment">Monitoring (metrics/healthchecks)</li>
+<li class="fragment">Hardware agnostic</li>
+</lu>
+</section>
+
+<section>
+<h2>Why Bright OpenStack?</h2>
+<lu>
+<li class="fragment">Easy, but customizable</li>
+<li class="fragment">Complete package</li>
+<li class="fragment">Hardware agnostic</li>
+<li class="fragment">Flexible</li>
+</lu>
+</section>
+
+
+
+
+<section data-transition="zoom">
+<h1>Using (Bright) OpenStack ...</h1>
+</section>
+
+<section data-transition="zoom">
+<h1>... as end-users</h1>
+</section>
+
+<section data-transition="zoom">
+<img width="70%" src="img/login-openstack-dashboard.jpg"/>
+</section>
+
+<section data-transition="zoom">
+<img width="70%" src="img/horizon-generic.png"/>
+</section>
+
+<section>
+<h2>Horizon - self-provisioning portal</h2>
+user can create/manage:
+<lu>
+<li>Networks (L2 broadcast domain)</li>
+<li>Subnets (L3 IP subnets)</li>
+<li>Routers (connect subnets)</li>
+<li>VM Images (ISO, QCOW, RAW, ...)</li>
+<li>Servers (VMs)  (start/stop/view status)</li>
+<li>Volumes (aux. storage)</li>
+<li>Stacks</li>
+<li>Firewalls</li>
+<li>Security groups</li>
+</lu>
+</section>
+
+
+<section data-transition="zoom">
+<h1>... as cloud-admins</h1>
+</section>
+
+<section data-transition="zoom">
+<img  width="90%" src="img/cmgui-vs-dashboard.png"/>
+</section>
+
+
+
+
+
+
+
+<section data-transition="zoom">
+<h1>Let's recap</h1>
+</section>
+
+<section>
+<h2>Recap: OpenStack</h2>
+<lu>
+<li>Clouds make sense...</li>
+<li>...but only with the right tools</li>
+<li>OpenStack is the cool kid, ... with some issues</li>
+<li>... but Bright OpenStack solves typical OpenStack headaches</li>
+</lu>
+</section>
+
+
+<section>
+<h2>Recap: OpenStack (2)</h2>
+<lu>
+<li>Collection of services</li>
+<li>Keystone, Nova, Cinder, Glance, Heat, Neutron</li>
+<li>Each offering a different function</li>
+<li>Many other services in OpenStack ecosystem</li>
+</lu>
+</section>
+
+
+
+<section>
+Thank you
+</section>
+
+<section data-transition="zoom">
+
+</section>
+
+<!-- ----------------------------------------------------------------------------- -->
+
+
+
+<section data-transition="zoom">
+...
+</section>
+
+<!-- FOO -->
+<section data-transition="zoom">
+<h1>Deep dive to OpenStack</h1>
+</section>
+
+
+<section>
+<h2>Outline</h2>
+  <lu>
+      <li>OpenStack Architecture</li>
+      <li>OpenStack Internals</li>
+      <li>Using OpenStack</li>
+  </lu>
+</section>
+
+
+
+
+<section data-transition="zoom">
+<h1>OpenStack Architecture</h1>
+</section>
+
+<section data-transition="zoom">
+<img src="img/openstack-architecture0.png"/>
+</section>
+
+  
+<section>
+<h2>OpenStack core services</h2>
+<lu>
+<li class="fragment">Horizon: Dashboard (user access)</li>
+<li class="fragment">Keystone: identity (Auth*)</li>
+<li class="fragment">Nova: compute (VMs)</li>
+<li class="fragment">Glance: image store (for VMs)</li>
+<li class="fragment">Cinder: block devices (for VMs)</li>
+<li class="fragment">Neutron: networking (for VMs/containers)</li>
+<li class="fragment">Heat: orchestration (of infra)</li>
+</lu>
+</section>
+
+<section data-transition="zoom">
+<img width="90%" src="img/openstack-architecture1.jpg"/>
+</section>
+
+
+
+<section>
+<h2>OpenStack core services</h2>
+<lu>
+<li class="fragment">Services talk externally via HTTP APIs</li>
+<li class="fragment">Services have multiple parts (e.g. nova-api, nova-scheduler, nova-conductor, nova-compute)</li>
+<li class="fragment">Internally those parts use AMQP for communication</li>
+<li class="fragment">3 nodes classes: Controller, Network, Hypervisor nodes</li>
+<li class="fragment">Different nodes classes run different parts of services</li>
+<li class="fragment">e.g. nova-compute on Hypervisors, and all other nova-* on Controllers </li>
+</lu>
+</section>
+
+
+<section data-transition="zoom">
+<img width="90%" src="img/openstack-architecture2.jpg"/>
+</section>
+
+<section>
+<h2>Example: compute (Nova)</h2>
+<lu>
+<li>nova-api</li>
+<li>nova-scheduler</li>
+<li>nova-compute</li>
+<li>nova-conductor</li>
+<li>nova-novncproxy</li>
+</lu>
+</section>
+
+<section>
+<h2>Counter Example: auth (keystone)</h2>
+<lu>
+<li>Keystone</li>
+</lu>
+</section>
+
+
+<section>
+<h2> Example: networking (Neutron) </h2>
+<lu>
+<li>neutron-server</li>
+<li>dhcp-agent</li>
+<li>l2-agent:</li>
+<lu>
+<li>linuxbridge-agent</li>
+<li>ovs-agent</li>
+</lu>
+</section>
+
+
+<section>
+<h2>OpenStack Aux software</h2>
+<lu>
+<li>MySQL (galera)</li>
+<li>AMQP (RabbitMQ)</li>
+<li>HAProxy</li>
+<li>ELK</li>
+</lu>
+</section>
+
+
+<section>
+<h2>OpenStack Node Types</h2>
+<lu>
+<li>Controller nodes  (api-endpoint, and logic)</li>
+<li>Hypervisor (compute) nodes</li>
+<li>Network nodes</li>
+</lu>
+</section>
+
+
+<section>
+<h2>OpenStack Networking</h2>
+Tenants (users) want isolated and secure networks
+<lu>
+<li>VXLANs</li>
+<li>VLANs</li>
+</lu>
+</section>
+
+<section>
+<h2>OpenStack Routers</h2>
+<lu>
+<li>CVR</li>
+<li>DVR</li>
+</lu>
+</section>
+
+
+<section data-transition="zoom">
+<h1>OpenStack Internals</h1>
+</section>
+
+<section data-transition="zoom">
+<h1>Example - creating a VM</h1>
+<p>how it all ties together</p>
+</section>
+
+<section>
+<h2>Example (1/2)</h2>
+<lu>
+<li class="fragment">User (client) wants to create a VM</li>
+<li class="fragment">Client authenticates against keystone's API</li>
+<li class="fragment">Obtain a token for a specific project</li>
+<li class="fragment">Uses token to ask nova-api for a vm</li>
+<li class="fragment">Nova-api verifies token against keystone's API</li>
+<li class="fragment">Nova-api forwards the request to nova-scheduler</li>
+<li class="fragment">Nova-scheduler picks a host (filters, weights)</li>
+<li class="fragment">...</li>
+</lu>
+</section>
+
+
+
+<section>
+<h2>Example (2/2)</h2>
+<lu>
+<li  class="fragment">...</li>
+
+<li class="fragment">Nova-scheduler picks a host (filters, weights)</li>
+<li class="fragment">Nova-scheduler ask nova-compute on that host to boot vm</li>
+<li class="fragment">Nova-compute asks Cinder for a volume</li>
+<li class="fragment">Nova-compute asks Neutron for networking</li>
+<li class="fragment">Nova-compute spins up a VM</li>
+<li class="fragment">Nova-compute asks nova-conductor to update the DB</li>
+<li class="fragment">VM starts</li>
+</lu>
+</section>
+
+
+
+<section>
+Thank you
+</section>
+
+
+<section>
+
+</section>
+
+
+
+
+
+<!-- FOO -->
+<section data-transition="zoom">
+<h1>Introduction to </h1>
+<img width="80%" src="img/ceph-logo.jpg"/>
+</section>
+
+
+  
+        
+<section>
+<h1>What is Ceph?</h1>
+<lu>
+<li class="fragment">SDS solution</li>
+<li class="fragment">Object, Block, file storage</li>
+<li class="fragment">Popular with OpenStack (Nova, Glance, Cinder, (RadosGW))</li>
+<li class="fragment">Hardware agnostic - be careful though</li>
+</lu>
+
+<br/>
+<p class="fragment">based on</br> <u>R</u>eliable, <u>A</u>utonomous, <u>D</u>istributed <u>O</u>bject <u>S</u>tore</br>(RADOS)</p>
+</section>
+  
+<section>
+<h1>Ceph high-level Architecture </h1>
+<img src="img/ceph-elements.png"/>
+</section>      
+
+<section>
+<h1>Ceph (RADOS) key features?</h1>
+<lu>
+<li class="fragment">Reliable - multiple replicas</li>
+<li class="fragment">Autonomous - self healing</li>
+<li class="fragment">Distributed - Data/replicas spread across nodes/racks/DCs</li>
+<li class="fragment">Scalable - @CERN: PB, 10.000vms</li>
+<li class="fragment">Client access data directly (cluster map)</li>
+<li class="fragment">Copy-on-write (Glance image to Nova/Cinder)</li>
+
+<lu>
+</section>
+        
+<section>
+<h1>Ceph nodes</h1>
+<lu>
+<li class="fragment">Ceph OSD Nodes (store data) </li>
+<li class="fragment">Ceph monitor (store cluster map) (at least 3)</li>
+<li class="fragment">(optional) Ceph Metadata Server (for CephFS)</li>
+</lu>
+<p class="fragment"><br/>OSD nodes typically deployed with "SSD Journals" to speed up writes (HDDs are slow)</p>
+</section>      
+
+<section>
+<h1>1 OSD node, multiple OSD Daemons</h1>
+<img src="img/ceph-architecture-storage.jpg"/>
+</section>      
+
+
+<section>
+<img width="50%" src="img/ceph-architecture.png"/>
+</section>
+
+
+
+
+
+<section>
+<img width="50%" src="img/openstack-plus-ceph.png"/>
+</section>
+
+
+<section>
+<h2>OpenStack + Ceph?</h2>
+<lu>
+<li>used for Cinder (volumes)</li>
+<li>used for Nova (ephemeral)</li>
+<li>used for Glance (images)</li>
+<li>used as Swift replacement (object via Rados Gateway)</li>
+</lu>
+</section>
+
+<section data-transition="zoom">
+<img width="90%" src="img/openstack-plus-ceph-diagram.jpg"/>
+</section>
+
+
+
+
+<section>
+<h2>Ceph and data replication</h2>
+<lu>
+<li class="fragment">Client wants to write data</li>
+<li class="fragment">Retrieves cluster map from monitor</li>
+<li class="fragment">Determine OSD:</li>
+</lu>
+
+<img width="50%" src="img/ceph-crush-placement.png" class="fragment"/>
+</section>
+
+
+
+<section>
+
+<h2>Ceph and data replication</h2>
+<lu>
+<li>Writes to primary OSD</li>
+<li>OSD replicates to other OSDs</li>
+</lu>
+<img width="40%" src="img/ceph-replication.png"/>
+</section>
+
+
+<section data-transition="zoom">
+<h1>Let's recap</h1>
+</section>
+
+<section>
+<h2>Recap: Ceph</h2>
+<lu>
+<li>Distributed Object Storage system</li>
+<li>Works great with OpenStack</li>
+<li>But can also be used standalone</li>
+</lu>
+</section>
+
+<section>
+Thank you
+</section>
+
+
+
+
+
+
+
+
+
+    
+  </div>
+
+  <div class="footer">
+    
+  </div>
+
+  <script src="js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+
+  <script src="js/this.js"></script>
+
+  </body>
+</html>
+
+

@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>7.3 Update - cloud</title>
+
+    <meta name="author" content="Piotr Wachowicz" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="css/zenburn.css">
+    <link rel="stylesheet" href="css/openstack.css" id="theme">
+    
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href =
+        window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' :
+          'css/print/paper.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--script src="js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/this.js"></script-->
+  </head>
+<body>
+
+  <div class="reveal"><div class="slides">
+  
+    <section data-transition="zoom">
+      <h1>Bright 7.3 update</h1>
+      <p>Cloud</p>
+      <p><i>Piotr Wachowicz</i></p>
+      <p>www.brightcomputing.com</p>
+    </section>
+ 
+
+    <section>
+    <h2>Agenda</h2>
+      <lu>
+        <li>New in CaaS (cm-bright-image)</li>
+        <li>New in OpenStack</li>
+        <li>New in Cloud bursting (AWS)</li>
+        <li>cmsub</li>
+        <li>cm-setup</li>
+      </lu>
+    </section>
+    
+    <section data-transition="zoom">
+      <img src="img/krusty.png"/>
+    </section>
+   
+    <section>
+    <h2>CaaS - Cluster-as-a-Service (1/2)</h2>
+      <lu>
+        <li>caas-tools (aka krusty-tools) production ready</li>
+        <li>Improved CLI experience</li>
+        <li>Integrated with cloud-init (more cloud native)</li>
+        <li>Faster cluster creation (30 min -> 3(?) min)</li>
+      </lu>
+    </section>
+  
+  <section>
+   <h2>CaaS - Cluster-as-a-Service (2/2)</h2>
+   caas-tools
+      <lu>
+        <li>now (7.1, 7.2): install entire headnode from scratch</li>
+        <li>future (7.3): use nightly-built headnode images</li>   
+      </lu>
+        <p>Krusty upgrade 7.1->7.3 later this year</p>
+  </section>
+    
+  <section>
+  <h2>99 problems, Krusty ain't one</h2>
+      <lu>
+        <li>problem #1: 7.2/7.3 headnode AMIs</li>
+        <li>problem #2: improve CaaS (speed, security)</li>
+        <li>problem #3: future: burst to OpenStack</li>
+        <li>problem #4: future: burst to Azure, Google</li>
+        <li>..</li>
+        <li>problem #98: future: run headnode in container?</li>
+        <li>problem #99: maintain it all</li>
+      </lu>
+  </section>
+  
+   <section data-transition="zoom">
+      <h1>solution</h1>
+      <p class="fragment">cm-bright-image</p>
+    </section>
+  
+  <section>
+   <h2>cm-bright-image</h2>
+      <lu>
+        <li>New tool</li>
+        <li>Creates headnode images for various target platforms</li>
+        <li>Same process for AWS AMIs, Krusty Images, Azure, Google, Rackspace OpenStack, Docker(?)</li>
+      </lu>
+  </section>
+  
+  <section>
+   <h2>cm-bright-image</h2>    
+      New image creation process - 4 steps
+      <lu>
+        <li>Headnode installed to a directory (JD!)</li>
+        <li>Customize it (for AWS, OpenStack, CaaS)</li>
+        <li>Create a RAW image file</li>
+        <li>Ship to target platform (upload to Kursty or to AWS)</li>
+      </lu>
+  </section>
+  
+  <section>
+   <h2>cm-bright-image</h2>
+      Create headnode images for various platforms
+      <lu>
+        <li>new Krusty will offer nightly builds of headnodes</li>
+        <li>copy-on-write volume creation</li>
+        <li>similar to cluster-on-demand (bright-setup)
+      </lu>
+  </section>
+
+  <section>
+   <h2>cm-bright-image  - Future</h2>
+      <lu>
+        <li>Node-installer images (needed for AWS)</li>
+        <li>Software image images (speed up prov.)</li>
+      </lu>
+  </section>
+  
+  <section>
+   <h1>Why should you care?</h1>
+   <p class="fragment">Fast cluster creation (2-3 min)</p>
+   <p class="fragment">Faster krusty - less data moved around.</p>
+  </section>
+  
+  <section>
+   <h1>Q?</h1>
+  </section>
+  
+  
+  <section data-transition="zoom">
+    <img src="img/openstack1.png"/>
+  </section>
+ 
+  
+  <section data-transition="zoom">
+    <h1>Bright OpenStack </h1>
+  </section>
+  
+  
+    <section>
+    <h1>Bright OpenStack in general</h1>
+      <lu>
+        <li class="fragment">OpenStack Mitaka (more later)</li>
+        <li class="fragment">Improved OpenStack CLI deployment (cm-setup: more later)</li>
+        <li class="fragment">Robustness of the deployment process</li>
+        <li class="fragment">Multi-domain support</li>
+        <li class="fragment">tons of improvements all over, e.g. in Galera (Oleg)</li>
+      </lu>
+    </section>
+
+    
+<section data-transition="zoom">
+<h1>Most important thing about OpenStack Mitaka</h1>
+<p  class="fragment">If it breaks, we all blame Marko and Stefan! ;-)</p>
+</section>
+  
+    
+  <section data-transition="zoom">
+    <h1>OpenStack Mitaka upstream</h1>
+    <p>What's new in Glance, Cinder, Neutron, Nova, Keystone</p>
+  </section>
+    
+    
+<section data-transition="zoom">
+<h2>OpenStack Mitaka</h2>
+<img src="img/mitaka-create-instance.png" style="width:100%"/>
+</section>
+
+
+    
+    <section>
+    <h2>Glance (image storage)</h2>
+      <lu>
+        <li>Horizon Dashboard - improved user experience</li>
+        <li>Glance - download images over HTTPs (+signatures)</li>
+        <li>Better support for large images (token expiration)</li>
+      </lu>
+    </section>
+        
+    <section>
+    <h2>Cinder (volume as a service)</h2>
+      <lu>
+        <li>Google Cloud Storage backup</li>
+        <li>Snapshot backup (apart from volumes)</li>
+        <li>Easier snapshot management (delete vol + all snapshots)</li>
+      </lu>
+    </section>
+    
+    <section>
+    <h2>Neutron</h2>
+      <lu>
+        <li>"Get me a network" - easier to get started</li>
+        <li>Better integration with external DNS</li>
+        <li>BGP Support (announcement of tenant subnets)</li>
+      </lu>
+    </section>
+    
+     
+    <section>
+    <h2>Heat (orchestration) (and thus CaaS)</h2>
+      <lu>
+        <li>New engine - "convergence"</li>
+        <li>Improved scalabality</li>
+        <li>BGP Support (announcement of tenant subnets)</li>
+      </lu>
+    </section>
+     
+     
+        
+  <section>
+   <h1>Q?</h1>
+  </section>
+  
+    <section data-transition="zoom">
+      <h1>Cloud Bursting</h1>
+    </section>
+  
+  
+<section>
+<h2>Cloud Bursting - two types</h2>
+<lu>
+<li>cluster-on-demand</li>
+<li>cluster extension</li>
+</lu>
+</section>
+
+
+<section data-transition="zoom">
+  <h2>Cluster-on-demand</h2>
+  <img src="img/cluster-on-demand.png" style="width:60%"/>
+</section>
+
+<section data-transition="zoom">
+  <h2>Cluster extension</h2>
+  <img src="img/cluster-extension.png" style="width:60%"/>
+</section>
+
+
+
+<!-- TODO add cloud bursting graphics -->
+
+<section data-transition="zoom">
+  <h1>in 7.3: Keep it simple</h1>
+</section>
+
+
+<section>
+<h2>Simplified cloud bursting</h2>
+<lu>
+<li>cloud-bursting in 7.3 is VPC only!</li>
+<li>VPC used to be an add-on</li>
+<li>fewer wizards, fewer tools</li>
+</lu>
+</section>
+
+
+
+<section>
+<h2>Cloud bursting is VPC Only</h2>
+<p>VPC - virtual private cloud environment</br>Some history:</p>
+<lu>
+<li class="fragment">EC2-classic  (legacy) - shared env.</li>
+<li class="fragment">VPC (current standard) - private env.</li>
+<li class="fragment">Default VPC  (transition)</li>
+</lu>
+</section>
+
+
+<section>
+  <h2>EC2-classic</h2>
+  <img src="img/ec2-classic-basics.png" style="width:60%"/>
+</section>
+
+<section>
+  <h2>VPC (a.k.a. EC2-VPC) </h2>
+  <img src="img/vpc-basics.png" style="width:60%"/>
+</section>
+
+
+<section>
+  <h2>Cluster-on-Demand in VPC</h2>
+  <img src="img/cluster-on-demand-in-vpc.png" style="width:60%"/>
+</section>
+
+
+
+<section>
+  <h2>Cluster extension in VPC</h2>
+  <img src="img/bright-in-vpc.png" style="width:60%"/>
+</section>
+
+
+<section data-transition="zoom">
+  <h1>Problem</h1>
+  <p>cluster-on-demand VPC hard to create</p>
+</section>
+
+<section>
+<img src="img/aws-console-vpc-wizard.png" style="width:90%"/>
+</section>
+
+<section data-transition="zoom">
+  <h1>Solution</h1>
+  <p>cm-cluster-on-demand</p>
+</section>
+
+
+
+<section>
+<h2>Cluster-on-demand</h2>
+<lu>
+<li>Easier to setup</li>
+<li>New <u>'cm-cluster-on-demand'</u> tool (Ilya!)</li>
+<li>Creates &amp; configures the VPC for you</li>
+<li>Create cluster-on-demand from anywhere</li>
+<li>All you need is Product Key (from customer portal)</li>
+<li>Batch creation of clusters (pre-sales)</li>
+</lu>
+</section>
+
+
+<section>
+<h2>Cluster extension</h2>
+<lu>
+<li>Easier to setup (one tool, one wizard)</li>
+<li>Easier to understand</li>
+</lu>
+</section>
+
+
+
+
+<section>
+<h2>cm-cluster-extension</h2>
+<p>Replaces</p>
+<lu>
+
+<li>cm-cloud-setup (basic cloud bursting)</li>
+<li>cm-cloud-private-cloud-setup (VPC add-on)</li>
+<li>cm-cloud-check</li>
+
+</lu>
+<p><br/>One CMGUI wizard, instead of two</p>
+</section>
+
+
+<section>
+   <h1>Why should you care?</h1>
+   <p class="fragment">Easier to test your stuff in the cloud</p>
+  </section>
+
+<section>
+<h1>new cluster-extension wizard</h1>
+</section>  
+
+<section>
+<img src="img/new-cluster-extension-wizard-0.png"/>
+</section>  
+<section>
+<img src="img/new-cluster-extension-wizard-1.png"/>
+</section>  
+<section>
+<img src="img/new-cluster-extension-wizard-2.png"/>
+</section>  
+<section>
+<img src="img/new-cluster-extension-wizard-3.png"/>
+</section>  
+<section>
+<img src="img/new-cluster-extension-wizard-4.png"/>
+</section>  
+  
+  
+
+<section>
+  <h1>And previously</h1>
+</section>  
+
+
+<section>
+<img src="img/old-wizard/0.png"/>
+</section>  
+<section>
+<img src="img/old-wizard/1.png"/>
+</section>  
+<section>
+<img src="img/old-wizard/2.png"/>
+</section>  
+<section>
+<img src="img/old-wizard/3.png"/>
+</section>  
+<section>
+<img src="img/old-wizard/4.png"/>
+</section>  
+ 
+ 
+<section>
+<img src="img/old-wizard/5.png"/>
+</section>  
+<section>
+<img src="img/old-wizard/6.png"/>
+</section>  
+<section>
+<img src="img/old-wizard/7.png"/>
+</section>  
+<section>
+<img src="img/old-wizard/8.png"/>
+</section>  
+<section>
+  <h1>Almost there</h1>
+  <p>now, VPC</p>
+</section>  
+
+
+<section>
+<img src="img/old-wizard/b0.png"/>
+</section>  
+
+<section>
+<img src="img/old-wizard/b1.png"/>
+</section>  
+
+
+<section>
+  <h1>Old wizard in a <u>nut</u>shell</h1>
+</section>  
+
+
+<section>
+<img src="img/nut-ball.gif" style="width: 80%"/>
+</section>  
+
+<section>
+<h1>Other new AWS features</h1>
+</section>
+
+
+
+<section>
+<h2>AWS Direct Connect</h2>
+<lu>
+  <li>Direct link to AWS</li>
+  <li>Now, easier to set up</li>
+</lu>
+</section>
+
+<section>
+<h2>EBS Snapshots</h2>
+<lu>
+  <li>Quickly spin up cloud directors</li>
+  <li>and cloud compue nodes</li>
+</lu>
+</section>
+
+
+<section>
+<h2>Only HVM</h2>
+  <lu>
+  <li>Xen - 2 types of virtualization</li>
+  <lu>
+    <li>HVM - Hardware Virtual Machine</li>
+    <li>PV - Paravirtualization</li>
+  </lu>
+  <li>PV used to be faster, but requires modified kernel</li>
+  <li>HVM now faster than PV</li>
+  <li>HVM: better instance type support, regions</li>
+  </lu>
+</section>
+
+
+
+
+
+
+
+
+
+<section>
+   <h1>Q?</h1>
+  </section>
+
+  
+  <section data-transition="zoom">
+   <h1>cmsub</h1>
+  </section>
+
+   
+  
+
+<section>
+<h2>cmsub</h2>
+<lu>
+  <li>rewritten cm-cloud-storage-setup (Pavel!)</li>
+  <li>cmsub - Several core improvements (Oleksandr, Pavel, Stefan)</li>
+  <li>e.g. undo/retry functionality</li>
+</lu>
+</section>
+
+<section data-transition="zoom">
+  <h1>cm-setup</h1>
+  <p>python framework for configuring stuff</p>
+</section>
+
+<section>
+<h2>cm-setup - unified configuration suite</h2>
+  <lu>
+  <li>cm-docker-registry-setup</li>
+  <li>cm-cluster-extension</li>
+  <li>cm-openstack-setup</li>
+  <li>cm-openstack-populate</li>
+  <li>cm-elk-setup</li>
+  <li>cm-galera-setup  (MariaDB cluster)</li>
+  <li>cm-cloud-storage-setup (cmsub)</li>
+  <li>bright-setup (cluster-on-demand, CaaS)</li>
+  </lu>
+</section>
+
+
+
+<section>
+<h2>cm-setup</h2>
+  <lu>
+  <li>configures stuff</li>
+  <li>composed of tools, modules, stages</li>
+  <li>tool (collection of modules) -> cm-openstack-setup</li>
+  <li>modules (collection of stages) -> keystone, nova, galera, (ceph)</li>
+  <li>stages -> do_stuff()
+  <li>2 tools, 1 module (e.g. galera)</li>
+  </lu>
+</section>
+
+
+<section>
+Why?
+  <lu>
+  <li>undo stages (A(), B(), FAIL, undo_B(), undo_A()</li>
+  <li>cmdaemon pythoncm connection</li>
+  <li>man page generation</li>
+  <li>python logging</li>
+  <li>ncurses dialogs</li>
+  <li>input config file handling</li>
+  <li>coupled with CMGUI (web cmgui)</li>
+  <li>CMGUI deployment wizard</li>
+  </lu>
+</section>
+
+
+<section>
+<h2>cm-setup - Undo/Abort/Retry/Skip</h2>
+<pre>
+<code>## Progress: 25
+#### stage: clusterextension: Remove Cloud Nodes
+### ERROR ###
+Error: 'Module' object has no attribute '_categories'
+
+Please type:
+  'u' to undo all of the stages
+  'a' to abort to terminate the setup in place, i.e. don't undo previous steps
+  's' to skip the current stage, and proceed with the next one (not recommended)
+  'r' to retry the current step and continue if possible (not recommended)
+  'i' to print more info about the error (stacktrace)
+Undo/Abort/Retry/Skip/Info: u/a/r/s/i:
+</code>
+</pre>
+(also works from CMGUI!)
+</section>
+
+
+
+<section>
+<h2>cm-setup</h2>
+Why #2?
+  <lu>
+  <li>unified dev experienve</li>
+  <li>unified UX</li>
+  <li>unified UI</li>
+  </lu>
+</section>
+
+
+
+
+
+
+
+<section>
+<h2>cm-setup - tool</h2>
+<pre>
+<code>1: tool_config = setup.engine.tool.Tool()
+2: tool_config.tool_name = "Example0"                                                                                                                                                                          
+3: tool_config.script_name = "cm-example0-setup"
+4: tool_config.submodules = ["example0"]
+5: tool_config.default_stage_set = ("example0", "my_stages")
+
+</code>
+</pre>
+</section>
+
+<section>
+<h2>cm-setup - module</h2>
+<pre>
+<code>1: class Module(setup.engine.BaseModule):
+2:  def my_stages(self):
+3:    s = [FooStage(), BarStage()]
+4:    ss = setup.engine.stageset.StageSet(self, s)                                                                                                                                                            
+5:    return ss
+</code>
+</pre>
+</section>
+
+
+<section>
+<h2>cm-setup - stage</h2>
+<pre><code>1: class FooStage(setup.engine.Stage):
+2:   def run(self):
+3:     (ret, code) =  self.dialog_builder.ask_yes_no("Create?")
+4:     if ret:
+5:       os.system("touch /etc/foo")
+6:       self.was_created = True
+7:     else:
+8:       self.was_created = False
+9:       
+10:  def undo(self): # optional
+11:    if self.was_created:
+12:      os.system("rm /etc/foo")
+</code>
+</pre>
+</section>
+
+
+
+
+<section data-transition="zoom">
+  <h1>Let us summarize</h1>
+</section>
+  
+
+<section>
+<h2>7.3 Takeaways</h2>
+<lu>
+<li class="fragment"> OpenStack "Mitaka" (next up, "Newton" in 8.0)</li>
+<li class="fragment"> Cloud bursting got easier</li>
+<li class="fragment"> unified headnode image creation: cm-bright-image</li>
+<li class="fragment"> CaaS (krusty) improvements</li>
+<li class="fragment"> Cluster-on-demand: cm-cluster-on-demand</li>
+<li class="fragment"> Cluster extension: cm-cluster-extension</li>
+<li class="fragment"> cmsub easier to deploy, and stable</li>
+<li class="fragment"> VPC only (dropped EC2-classic support)</li>
+<li class="fragment"> HVM only (dropped PV virtualization)</li>
+</lu>
+</section>
+
+<section>
+<h2>8.0?</h2>
+<lu>
+<li class="fragment"> OpenStack "Newton"</li>
+<li class="fragment"> Bursting to OpenStack</li>
+<li class="fragment"> Refactored cloud bursting codebase</li>
+<li class="fragment"> more improvements in cm-setup (offload stuff to cmutils)</li>
+</lu>
+</section>
+
+
+<section data-transition="zoom">
+  <h1>Thank you, questions?</h1>
+</section>
+  
+
+
+<!-- CEPH -->
+    
+  </div>
+
+  <div class="footer">
+    
+  </div>
+
+  <script src="js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+
+  <script src="js/this.js"></script>
+
+  </body>
+</html>
+
+

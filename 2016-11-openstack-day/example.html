@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Ceph and OpenStack: Anything-as-a-Service</title>
+
+    <meta name="author" content="Piotr Wachowicz" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="css/zenburn.css">
+    <link rel="stylesheet" href="css/openstack.css" id="theme">
+    
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href =
+        window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' :
+          'css/print/paper.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--script src="js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/this.js"></script-->
+  </head>
+<body>
+
+  <div class="reveal"><div class="slides">
+
+    <!--section data-state="cover">
+
+      <h1><span xmlns:dct="http://purl.org/dc/terms/"
+             href="http://purl.org/dc/dcmitype/InteractiveResource"
+             property="dct:title"
+             rel="dct:type">
+          Anything as a service
+        </span></h1>
+        <h3 xmlns:cc="http://creativecommons.org/ns#"
+             property="cc:attributionName">Piotr Wachowicz</h3>
+
+    </section-->
+
+    <section data-transition="zoom">
+      <h1>Ceph and OpenStack</h1>
+      <p>Anything as a service</p>
+      <p><i>Piotr Wachowicz</i></p>
+    </section>
+
+
+    
+
+    <section>
+      <h1>Clouds are cool, however...</h1>
+      ... there's a gap in the 'as a service'.
+    </section>
+    
+    <section>
+    <h1>The gap</h1>
+    <p></p>
+    
+    <table>
+      <thead>
+        <tr>
+        <th>we have</th>
+        <th>&nbsp;&nbsp;&nbsp;gap&nbsp;&nbsp;&nbsp;</th>
+        <th>(power) users want</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td class="fragment">
+        <p>
+        Sahara (Hadoop as a Service)<br/>
+        Magnum (Containers ...)<br/>
+        Cinder (Block Storage ...)<br/>
+        Neutron (OVS+OVN) (SDN)<br/>
+        ...
+        </p>
+        </td>
+        <td></td>
+        <td class="fragment">
+        better monitoring</br>
+        power</br>
+        flexibility</br>
+        freedom</br>
+        speed</br>
+        x-interaction</br>
+        Anything as a service (XaaS)</br>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    
+    </section>
+
+
+    <!----------------------------------->
+
+    <!---
+    <section data-transition="zoom">
+      <h1>Deep dive into LDAP</h1>
+      <p class="fragment">not really...</p>
+    </section>
+    --->
+    
+     <section>
+      <h1>Agenda</h1>
+      <p>XaaS = X + CaaS (Cluster as a service)</p>
+      <div class="fragment">
+      <lu>
+        <li>our use case</li>
+        <li>clusters 101</li>
+        <li>(from) cluster-as-a-service (CaaS)</li>
+        <li>(into) anything-as-a-service (XaaS)</li>
+        <li>( vs ) something-specific-as-a-service</li>
+        <li>implementation</li>
+        <li>Ceph's role</li>
+        <li>Ceph, lessons learned</li>
+        <li>Q&A</li>
+      </lu>
+      </div>
+    </section>
+
+
+    <!----------------------------------->
+    <section data-transition="zoom">
+      <h1>Our use case</h1>
+    </section>
+
+    <section>
+      <h1>Clusters, clusters, clusters... </h1>
+      <div>
+      <lu>
+        <li>5+ years ago: physical machines</li>
+        <li>5 years ago: kvm + bash</li>
+        <li>2 years ago: OpenStack + bash</li>
+        <li>now: OpenStack + Heat + CaaS (Cluster-as-a-service)</li>
+        <li>... turns out other people also need it</li>
+      </lu>
+      </div>
+    </section>
+
+    <section>
+      <br/>
+      <h1>... and even more clusters</h1>
+
+      <p>How do we use Caas?</p>
+      <lu>
+        <li>Our own, dogfooded, R&D and QA, Ceph/OpenStack based, cloud</li>
+        <li>14 nodes</li>
+        <li>&nbsp;&nbsp;&nbsp;&nbsp;   13 hypervisor nodes (kvm)</li>
+        <li>&nbsp;&nbsp;&nbsp;&nbsp;   7 ceph OSD nodes, 3 ceph-mons</li>
+        <li>~400 vms, across ~100 virtual clusters (HPC, Hadoop, OpenStack, Ceph, Spark, ...)</li>
+      </lu>
+    </section>
+
+    <section>
+      <img src="img/cmgui-mon.png" class="full"/>
+    </section>
+    
+    <section>
+      <img src="img/cmgui-mon-os1.png" class="full"/>
+    </section>
+
+    <section>
+      <img src="img/cmgui-vs-dashboard.png" class="full"/>
+    </section>
+
+    
+    
+
+
+    <!----------------------------------->
+    <section data-transition="zoom">
+      <h1>Clusters 101</h1>
+    </section>
+
+    <section data-backgroundX="#FFCECE" data-background-transitionX="zoom">
+      <h1>Clusters</h1>
+      <p><i>(wikipedia) A computer cluster consists of a set of loosely or tightly connected computers that work together so that, (...), they can be viewed as a single system.
+      </i></p>
+      <lu>
+        <li class="fragment">cluster = Headnode(s) + general purpose nodes</li>
+        <li class="fragment">cluster = Headnode(s) + compute(HPC) / Hypervisor(kvm) / storage(ceph) /... nodes</li>
+        <li class="fragment">clusters need to be managed</li>
+      </lu>
+      <p class="fragment">
+        <br/>
+        <b>Clouds</b> are simply clusters with Hypervisors and Storage nodes
+      </p>
+    </section>
+    
+    <section data-transition="fade">
+    <img src="img/b0.png"  width="80%" height="80%"/>
+    </section>
+    <section data-transition="fade">
+    <img src="img/b1.png" width="80%" height="80%"/>
+    </section>
+    <section data-transition="fade">
+    <img src="img/b2.png" width="80%" height="80%"/>
+    </section>
+    
+
+    
+    <!----------------------------------->
+    <section data-transition="zoom">
+      <h1>Cluster-as-a-service (CaaS)</h1>
+    </section>
+    
+<section>
+      <table>
+      <thead>
+        <tr>
+        <th>distro</th>
+        <th>packages</th>
+        <th>cluster manager</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td class="fragment">
+        Red Hat 6.0-7.1<br/>
+        CentOS 6.0-7.1<br/>
+        SL 6.0-7.1<br/>
+        SLES 11 sp1-4<br/>
+        SLES 12<br/>
+        </td>
+        <td class="fragment">
+        HPC packages</br>
+        Hadoop</br>
+        Spark</br>
+        Ceph</br>
+        OpenStack</br>
+        OpenStack + Ceph</br>
+        OpenStack + Ceph + Hadoop</br>
+        default (R&D)</br>
+        ...
+        </td>
+        <td class="fragment">
+        BCM 6.0</br>
+        BCM 7.0</br>
+        BCM 7.1</br>
+        BCM trunk</br>
+        ...
+        </td>
+      </tr>
+      </tbody>
+      </table>
+
+      <pre class="fragment">
+Example usage:
+$ os_cluster create -m m1.large -s m1.medium -n 2 pw-cluster \
+  CENTOS7u1 \
+  7.1 -x disklayout-head.xml \
+  --extra-packages openstack \
+  --on-boot-script myscript.py 
+$ # wait 20-30min, grab a coffee
+$ ssh root@pw-cluster
+      </pre>
+    </section>
+
+    
+
+    
+    <section>
+      <img src="img/caas-dashboard1.png" class="full"/>
+    </section>
+    <section>
+      <img src="img/caas-dashboard2.png" class="full"/>
+    </section>
+
+
+
+
+    <section data-transition="zoom">
+      <h1>Anything-as-a-service  (XaaS)</h1>
+    </section>
+
+    <section data-transition="zoom">
+      <h1>Anything-as-a-service</h1>
+      <p>CaaS + X == XaaS</p>
+      <lu>
+        <li>X = hadoop => Hadoop as a service</li>
+      </lu>
+      <div class="fragment">
+      <lu>
+
+        <li>openstack as a service</li>
+        <li>ceph ...</li>
+        <li>hpc ...</li>
+        <li>Kubernetes ...</li>
+      </lu>
+      </div>
+    </section>
+
+    <!----------------------------------->
+    <section data-transition="zoom">
+      <h1>XaaS Architecture</h1>
+    </section>
+
+    <!---
+    <section data-transition="fade">
+      <img src="img/caas/cc0.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc1.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc2.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc3.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc4.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc5.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc6.png" class="full noborder"/>
+    </section>
+    <section data-transition="fade">
+      <img src="img/caas/cc7.png" class="full noborder"/>
+    </section>
+    -->
+    <section data-transition="fade">
+      <img src="img/caas/cc8.png" class="full noborder"/>
+    </section>
+    <!----------------------------------->
+
+    <!---
+    <section data-transition="zoom">
+      <h1>Live demo</h1>
+      <img src="http://38.media.tumblr.com/0719ab81a3f36c9e62edd1f22c985e46/tumblr_nijemuu7291rnma1do1_400.gif"/>
+    </section>
+    -->
+    
+
+    <section data-transition="zoom">
+      <h1>Anything as a service</br>vs.</br>current situation</h1>
+      <table>
+      <thead>
+        <tr>
+        <th>OpenStack</th>
+        <th>OpenStack + XaaS</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td class="fragment">
+        specialized<br/>
+        focused<br/>
+        super easy to use</br>
+        limited</br>
+        isolated (api based interaction)</br>
+        limited x-interaction<br/>
+        </td>
+        <td class="fragment">
+        more demanding, but</br>
+        more powerful,</br>
+        extendable</br>
+        common environment</br>
+        limitless</br>
+        </td>
+      </tr>
+      </tbody>
+      </table>
+    </section>
+
+    <!----------------------------------->
+    <section>
+      <h1>Implementation</h1>
+      <lu>
+        <li>OpenStack + Ceph + Heat + python </li>
+        <li>User runs script</li>
+        <li>script creates heat stack</li>
+        <li>stack passed to Heat (create infra)</li>
+        <li>install virtual Headnode (pxe from physical cluster)</li>
+        <li>install virtual nodes (pxe from virtual headnode)</li>
+        <li>(XaaS) customize generic cluster (e.g. install Hadoop and OpenStack)</li>
+      </lu>
+    </section>
+
+    <section>
+
+<ol style="font-size:0.6em" type="1">
+<li>User submits a request  (cmd line, Horizon) to the “CaaS Service”: </li>
+<li><pre>$ os_cluster create -m m1.large -s m1.medium -n 2 pw-cluster CENTOS7u1 trunk -x disklayout-head.xml --extrapackagegroups openstack,ceph,hadoop --onbootscript myscript.py</pre></li>
+<li>“CaaS Service” creates Heat stack: headnode (iPXE image), networks,</li>
+<li>Register Headnode’s the MAC with specified distro/version for PXE boot  (for later)</li>
+
+<li>Headnode's iPXE:</li>
+<ul style="margin-left: 2em">
+  <li>DHCP from Neutron’s dnsmasq,</li>
+  <li>DHCP option in Neutron’s dnsmasq (contains iPXE chainloader URL)</li>
+  <li>obtains IP and the chainloader URL via mentioned DHCP option,</li>
+  <li>iPXE appends its own MAC to the chainloader URL,</li>
+  <li>chainloads from that URL</li>
+</ul>
+<li>iPXE chainload contacts “CaaS Service”. Service recognizes the MAC in URL, serves specific kernel/initrd (as requested by user, e.g. CentOS 7.1)</li>
+<li>initrd contains Cluster Headnode installer. Version requested by user,</li>
+<li>Installer is started and asked to install certain packages (as requested by user, e.g. Hadoop + Ceph + OpenStack)</li>
+<li>Installation is unattended. “CaaS Service” keeps track of progress,</li>
+<li>Headnode is ready,</li>
+<li>Slave nodes are configured and provisioned (iPXE over local net)</li>
+<li>Auxilary software (Anything-as-a-Service)</li>
+<li>Entire cluster is ready.</li>
+</ol>
+    </section>
+
+   <!----------------------------------->
+    <section data-transition="zoom">
+      <h1>Ceph's role</h1>
+    </section>
+
+    <section>
+    <h1>Ceph's role</h1>
+    <ul>
+      <li>single storage backend</li>
+      <li>ceph used for Glance, Nova, Cinder</li>
+      <li>copy-on-write of snapshots/volumes</li>
+      <li>ceph FS is coming (and so is easy sharing data between clusters)</li>
+      <li>cluster snapshots (nightly builds)</li>
+      <li>live migration (don't mix shared/non-shared backends)</li>
+    </ul>
+    </section>
+
+    <section>
+    <h1>Ceph and lessons learned</h1>
+    <ul>
+      <li class="fragment">use (robust) SSDs for journals</li>
+      <li class="fragment">journals less important with Big Data object storage</li>
+      <li class="fragment">consider SSDs for Ceph Mons</li>
+      <li class="fragment">don't combine OSDs with Hypervisors</li>
+      <li class="fragment">deep scrub is I/O intensive (default=weekly), smear it!</li>
+      <li class="fragment">more smaller nodes is better (failure domain)</li>
+      <li class="fragment">more smaller disks is better</li>
+      <li class="fragment">shelve unused instances</li>
+    </ul>
+    </section>
+
+    <section>
+    <h1>and more lessons learned</h1>
+    <ul>
+      <li class="fragment">take care of mon nodes</li>
+      <li class="fragment">live migration + heterogeneous HW</li>
+      <li class="fragment">ceph pool per OpenStack service</li>
+    </ul>
+    </section>
+
+    <section>
+      <h1>Questions?</h1>
+      (thank you!)
+    </section>
+  </div>
+
+  <div class="footer">
+    SDI summit
+  </div>
+
+  <script src="js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+
+  <script src="js/this.js"></script>
+
+  </body>
+</html>
+

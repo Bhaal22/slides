@@ -1,0 +1,639 @@
+ 
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Ceph OSDs: a pragmatic guide</title>
+
+    <meta name="author" content="Piotr Wachowicz" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="css/zenburn.css">
+    <link rel="stylesheet" href="css/openstack.css" id="theme">
+    
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href =
+        window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' :
+          'css/print/paper.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--script src="js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/this.js"></script-->
+  </head>
+<body>
+
+  <div class="reveal"><div class="slides">
+  
+<section data-transition="zoom">
+<h1>Ceph OSDs: <br/> a pragmatic guide</h1>
+<p><i>Piotr Wachowicz</i><br/>
+www.brightcomputing.com</p>
+<p style="color: #888">def: <b>pragmatic</b> (adj.) - /praɡˈmatɪk/ - 
+<i>"dealing with things sensibly and realistically in a way that is based on practical rather than theoretical considerations."</i></p>
+<p>OpenStack Summit Barcelona</br>slides @ https://speakerdeck.com/brightdevteam/ </p>
+
+</section>
+ 
+<section data-transition="zoom">
+<h1>Storage for OpenStack</h1>
+<p>Glance && (Cinder || Nova) + Object</p>
+</section>
+
+<section>
+
+<h2>Small scale storage / POC </h2>
+<p> node local storage / NFS</p>
+<lu>
+<li>Glance -- store on glance-api nodes (or NFS mount)</li>
+<li>Nova -- storage root/ephemeral on hypervisors (or NFS mount)</li>
+<li>Cinder -- store on NFS mount</li>
+<li>(optional) Object -- use Swift</li>
+</lu>
+</section>
+
+<section>
+<h2>Large scale / Production</h2>
+<p> distributed/redundant storage</p>
+<lu>
+<li>Storage appliance (proprietary, expensive)</li>
+<li>DYI storage (cheap, easily scalable, adaptable, commodity hardware)</li>
+</lu>
+
+</section>
+  
+<section data-transition="zoom">
+<h2>DYI of choice for OpenStack: Ceph</h2>
+<p class="fragmentx">Free, simple, widely adopted  (fig. from April 2016)<p> 
+<img width="80%" src="img/ceph-adoption-april-2016.png"/>
+</section>
+
+<section data-transition="zoom">
+<h1>Free? Simple? Flexible?</h1>
+<p>Let's analyze a case study following a Ceph Admin.</p>
+<p>Throughout the study, color <span style="color:orange">orange</span> references to Ceph.</p>
+</section>
+
+<section data-transition="zoom">
+<img width="100%" src="img/nut-ball.gif"/>
+</section>
+
+
+<section data-transition="zoom">
+<h1>Not so simple...</h1>
+</section>
+
+<section data-transition="zoom"><h1>But, why?</h1>
+<div class="fragment">
+<p >Ceph is complex, and waaaay too flexible</p>
+<p>==</p>
+<p>it's easy to misconfigure it</p>
+</div>
+</section>
+
+</section>      
+<section><h1>Main problem: 1 OSD node, how many OSD Daemons?</h1>
+<img src="img/ceph-architecture-storage.jpg"/>
+<p>thin nodes (&lt;10 disks) vs fat nodes (&gt;20 disks), how many?</p>
+</section>      
+
+
+
+
+
+<section data-transition="zoom">
+<h1>Today, let's discuss:</h1>
+<lu>
+<li>How many OSD daemons per node?</li>
+<li>"Best" OSD node hardware?</li>
+</lu>
+</section>  
+  
+  
+
+<section>
+<h2>Agenda</h2>
+<lu>
+<li>Background</li>
+<li>Ceph 101</li>
+<li>Right hardware for OSDs:</li>
+<lu>
+<li>Networking</li>
+<li>CPU Sockets, cores</li>
+<li>Disks</li>
+<li>Mem</li>
+</lu>
+<li>Fat (storage dense) vs thin OSD</li>
+<li>Conclusions</li>
+<li>Questions</li>
+
+</lu>
+</section>
+    
+        
+
+<section data-transition="zoom">
+<h1>Background</h1>
+</section>
+        
+<section>
+<h1>Background</h1>
+<lu>
+<li>Bright Computing</li>
+<li>Bright Cluster Manager - deploys/manages/monitors</li>
+<lu>
+<li>HPC Cluster</li>
+<li>OpenStack Clouds (Bright OpenStack)</li>
+<li>Ceph Cluster</li>
+<li>Big Data (Hadoop/Spark)</li>
+<li>Kubernetes, and more</li>
+</lu>
+</section>
+
+<section>
+<img width="90%" src="img/b2.png"/>
+</section>
+  
+ 
+<section>
+<h1>Challenge</h1>
+<p>infinite amount of different cluster configurations</p>
+<p>shiploads of scenarios</p>
+<p>we need virtual clusters (Dev, QA, support)</p>
+<p> we need them to be created <u>fast</u>, devs won't wait</p>
+</section>
+
+<section>
+<div class="fragmentx">
+<h1>Solution?</h1>
+<p>Our own Private cloud</p>
+<p>Bright OpenStack + Ceph (+ Heat)</p>
+<p> (Cluster on demand - clusters in under 2 minutes)</p>
+</div>
+</section>
+
+<section>
+<img width="90%" src="img/bright-cod.png"/>
+</section>
+
+<section>
+<h1>Krusty the cloud</h1>
+<img width="20%" src="img/krusty-face.gif"/>
+<p>17 Hypervisor Nodes, 400 VMs</p>
+<p>7 Ceph OSDs (extending to 10)</p>
+</section>
+
+
+<section>
+<img width="90%" src="img/cmgui-mon-os1.png"/>
+</section>
+<section>
+<img width="90%" src="img/cmgui-mon.png"/>
+</section>
+ 
+
+
+<section>
+
+<img width="90%" src="img/openstack-architecture-1.png"/>
+</section>
+
+<section>
+<h1>In a nutshell</h1>
+<p>We create hundreds of VMs daily.</p>
+<p>copy-on-write</p>
+<p>Entire engineering teams relies on Ceph working fine to make that happen, fast.</p>
+<p>create great software - not manage Ceph</p>
+</section>
+
+
+  
+<section data-transition="zoom">
+<img src="img/ceph-logo.jpg"/>
+<h1>101</h1>
+</section>
+        
+
+<section data-transition="zoom">
+<h1>Show of hands</h1>
+</section>
+                
+        
+<section>
+<h1>What is Ceph?</h1>
+<lu>
+<li >SDS solution</li>
+<li >Object, Block, file storage</li>
+<li class="fragmentx">Popular with OpenStack (Nova, Glance, Cinder, (RadosGW))</li>
+<li class="fragmentx">Hardware agnostic - be careful though</li>
+</lu>
+<br/>
+<p class="fragment">based on</br> <u>R</u>eliable, <u>A</u>utonomous, <u>D</u>istributed <u>O</u>bject <u>S</u>tore</br>(RADOS)</p>
+</section>
+  
+        
+
+<section>
+<h1>Ceph high-level Architecture </h1>
+<img src="img/ceph-elements.png"/>
+</section>      
+
+<section>
+<h1>Ceph (RADOS) key features?</h1>
+<lu>
+<li class="fragment">Reliable - multiple replicas</li>
+<li class="fragment">Autonomous - self healing</li>
+<li class="fragment">Distributed - Data/replicas spread across nodes/racks/DCs</li>
+<li class="fragment">Scalable - @CERN: PB, 10.000vms</li>
+<li class="fragment">Client access data directly (cluster map)</li>
+<li class="fragment">Copy-on-write (Glance image to Nova/Cinder)</li>
+
+<lu>
+</section>
+        
+<section>
+<h1>Ceph nodes</h1>
+<lu>
+<li>Ceph OSD Nodes (store data) </li>
+<li>Ceph monitor (store cluster map) (at least 3)</li>
+<li>(optional) Ceph Metadata Server (for CephFS)</li>
+</lu>
+<p><br/>OSD nodes typically deployed with "SSD Journals" to speed up writes (HDDs are slow)</p>
+</section>      
+
+<section>
+<h1>1 OSD node, multiple OSD Daemons</h1>
+<img src="img/ceph-architecture-storage.jpg"/>
+</section>      
+
+
+
+<section data-transition="zoom">
+<h1>Fat vs thin</h1>
+<p>More of  less dense (fewer disks), nodes, or fewer nodes with more disks?</p>
+</section>
+
+
+
+<section>
+<h1>Fat nodes</h1>
+<p>Many cores/sockets 20+ HDDs, 1+ Journal SSDs
+<ul>
+<li>Typically cheapest per PB in terms of initial purchase and power consumption</li>
+</ul>
+but
+
+<ul>
+<li>More difficult to configure and maintain</li>
+<li>Fewer nodes means longer recovery
+<li>more HDDs per node -> more cores -> more sockets -> NUMA</li>
+<li>Dense nodes -> more going on -> larger potential for bottlenecks
+</ul>
+
+<p>Good, choice <u>if</u> you can afford many (6-10+) of them</p>
+</section>
+
+<section>
+<h1>Thin nodes</h1>
+<ul>
+<li>faster recovery (if node goes down) </li>
+<li>typically 1 socket is enough (no NUMA) </li>
+</ul>
+but
+<ul>
+<li>more space in racks, more power needed</li>
+</ul>
+<p><br/>Good to start out</p>
+</section>
+
+
+
+<section>
+<h1>Fat vs thin - sweet spot?</h1>
+</section>
+
+
+<section data-transition="zoom">
+<h1>Networking</h1>
+<img src="img/openstack-plus-ceph.png"/>
+</section>      
+
+<section>
+<h1>Networking for OpenStack + Ceph</h1>
+<lu>
+<li class="fragment">OpenStack VMs need to talk (VLANs/VXLANs)</li>
+<li class="fragment">OpenStack, VMs, (clients) need to access Ceph</li>
+<li class="fragment">Ceph OSD need to replicate data</li>
+</lu>
+</section>
+
+
+
+<section>
+<h1>Solution 1 - Single Fabric </h1>
+Problems:
+<lu>
+<li>One broadcast domain (latency)</li>
+<li>Bandwidth</li>
+<li>Slower Max write -- Replication over same wire</li>
+<li>Slower Recovery</li>
+</lu>
+</section>
+
+
+
+<section>
+<h1>Solution 2 - Multiple Fabrics</h1>
+<lu>
+<li>Fabric for VLAN/VXLANs (east-west for VMs)</li>
+<li>For accessing Ceph (ceph-public)</li>
+<li>For OSD data replication (ceph-cluster)</li>
+</lu>
+<p><br/>But what about NICs? 10 GigE cards are expensive</p>
+</section>
+
+
+
+
+<section>
+<h1>Solution 2 - Multiple IP Fabric - NICs </h1>
+
+<lu>
+<li>Hypervisors:</li>
+<lu>
+<li>10 GigE for VLAN/VXLANs (east-west for VMs)</li>
+<li>10 GigE for ceph-public</li>
+<li>(optionally) 1 GigE for management</li>
+<li>(optionally) 1 GigE for north-south for VMs (DVR)</li>
+</lu>
+<li>Ceph OSDs:</li>
+<lu>
+<li>10 GigE for ceph-public</li>
+<li>10 GigE for ceph-cluster</li>
+<li>(optionally) 1 GigE for management</li>
+</lu>
+</lu>
+</section>
+
+   
+<section>
+<h1>Networking - other considerations</h1>
+<lu>
+<li>MTUs: 1500 vs 9000</li>
+<li>10 GigE minimum (dual NIC)</li>
+</lu>
+</section>
+
+<section>
+<h2>What about the disks?</h2>
+<lu>
+<li>+10 GigE -> SSD Journals!</li>
+<li>Journal SSDs should be robust</li>
+<li>Pay attention to amount of data it can write before failure (consumer grade can fail after 1 year)</li>
+</lu>
+
+&nbsp;
+<lu>
+<li>1 GigE (128 MB/s), won't saturate a SATA SSD (~400 MB/s seq w.)</li>
+<li>10 GigE (1280 MB/s), won't saturate a PCIe SSD (~2,000 MB/s seq w.)</li>
+</lu>
+</section>
+
+<section>
+<h2>Example: </h2>
+<lu>
+<li>we use Intel DC s3700, 200 GB, 375 MB/s seq write
+<li>Given HDDs have about 75 MB/s seq write</li>
+<li>We estimate we can have 5 HDDs per 1 SSDs (5 x 75 MB/s seq write)
+<li>And up to 3 SSDs per OSD node (on 10 GigE) (375MB * 8 (bits) => 3000 Gbps * 3 SSDs => 9Gbps)
+<li>That's a theoretical cap of 3 * 5 = 15 OSD daemon per node</li>
+<li>So, how many cores?</li>
+
+</lu>
+</section>
+
+
+
+<section data-transition="zoom">
+<h1>CPU</h1>
+</section>
+
+<section>
+<h1>How many sockets?</h1>
+<p>2+ sockets - NUMA</p>
+<lu>
+<li>cross socket QPI bus - 25GB/s, 12.5 each way</li>
+<li>You could (and should) pin OSD daemons to sockets, but...
+<li>Example: 10 GigE on socket A, OSD node on socket B, PCIe SSD Journal on socket A</li>
+<li><i>"Designing for High Performance Ceph at Scale"</i> - Austin summit</li>
+</lu>
+<h1>1 socket is a safe choice, but how many cores?</h1>
+</section>
+
+<section>
+<h1>How many cores?</h1>
+<p>Depends on your SSD (and networking)</p>
+
+<div>
+<lu>
+<li>1 CPU core per daemon/disk</li>
+<li>1 SATA SSD Journal per ~4-6 HDD disks</li>
+<li>1 PCIe SSD Journal per ~6-20 HDD disks</li>
+</lu>
+&nbsp;
+<lu>
+<li>Example: 2 SATA SSDs  could handle 12 OSDs</li>
+<li>which would require 12 core CPU</li>
+</lu>
+&nbsp;
+
+
+</section>
+
+<section>
+<h1> HT cores vs physical cores?</h1>
+</section>
+
+
+<section>
+<h2>How much memory?</h2>
+<p>0.5 GB - 1 GB per TB per daemon</p>
+<p>more is better (also, linux vFS caching)<p>
+<p>OSD node with 4 x 2 TB disks(4 daemons) -> 8 GB of RAM</p>
+<p>OSD node with 16 x 2 TB disks(16 daemons) -> 32 GB of RAM</p>
+</section>
+
+
+
+<section>
+<h1>One way to look at it (oversimplifying):</h1>
+<lu>
+<li class="fragment"> Network fabric, and perf. expectations, determine the num of SSDs per node</li>
+<li class="fragment"> Num and type of SSDs, determines the amount of HDDs</li>
+<li class="fragment"> Num of HDDs (OSD daemons) determines CPU core count</li>
+<li class="fragment"> size*count of HDDs determines the amount of memory needed</li> 
+</lu>
+</section>
+
+
+
+
+
+
+<section>
+<h1>Fat vs thin</h1>
+<div style="font-size:0.5em">
+<p> Assuming 0.4 GB/s seq write for SSDs, and 10 GigE fabric (i.e. 3 SSDs per node max) with a ceph-cluster network for replication, 1 journal SSD being able to support 6 HDDs</p>
+<table style="border-width:2px, border-color: #000">
+<tr>
+<td> </td><td><u>Unreasonably thin</u></td><td><u>Thin</u></td><td><u>Pragmatic</u></td><td><u>Regular</u></td> <td><u>Fat</u><td>
+</tr>
+
+<tr>
+<td>HDDs Total</td><td>96</td><td>96</td><td>96</td><td>96</td><td>96</td>
+</tr>
+
+<tr>
+<td>Nodes total</td><td><span style="color:green">96</span></td><td><span style="color:green">16</span></td><td><span style="color:orangex">8</span></td><td><span style="color:orange">6</span></td><td><span style="color:red">2</span></td>
+</tr>
+
+<tr>
+<td>HDDs/Node (cpu cores)</td><td>1</td><td>6</td><td>12 (or 10)</td><td>16</td><td>48</td>
+</tr>
+
+
+
+
+<tr>
+<td>Journal SSDs/Node</td><td>1</td><td>1</td><td>2</td><td>3</td><td>8</span> </td>
+</tr>
+
+<tr>
+<td>SSD Bandw/Node</td><td><span style="color:orange">3.2 Gbps</span></td><td><span style="color:orange">3.2 Gbps</td><td><span style="color:orangex">6.4 Gbps</td><td><span style="color:green">9.6 Gbps (1.2 GB/s)</td><td><span style="color:red"> 25 Gbps</span> </td>
+</tr>
+
+
+<tr>
+<td>cluster seq write (all SSDs)</td><td><span style="color:green">38.4 GB/s</span> (!)</td><td>6.4 GB/s </td><td>6.4 GB/s </td> <td>6.4 GB/s </td>
+
+<td>6.4 GB/s</td>
+<td></td>
+
+</tr>
+
+
+<tr>
+<td>Rack space / node</td><td><span style="color:green">1U</span></td><td><span style="color:yellowxx">1U x 2.5", 2U 3.5"</span> </td>
+
+
+ <td><span style="color:green">2U 3.5"</span></td>
+
+ <td><span style="color:orange">2U 2.5", 3U 3.5"</span></td>
+
+<td><span style="color:greenx">4U</span></td>
+<td></td>
+
+</tr>
+
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<td>Summary</td><td>underutilized SSD (1 HDD) and NIC<br/>great recovery</br>Peak IOps, bandwidth</td>
+
+<td>underutilized NIC<br/></td>
+
+
+<td>a bit underutilized NIC<br/>Goot utlization of SSDs</br></td>
+
+
+<td>ok, but<br>only 6 nodes</td>
+
+
+<td>Exceeding net (underutilizing SSDs)<br/>low resilency (long (LACK OF!) recovery)</td>
+</tr>
+
+</table>
+</div>
+</section>
+
+
+
+
+
+
+<section data-transition="zoom">
+  <h1>Takeaways</h1>
+  <ul>
+  <li>2U, 10 x 3.5" HDDs + 2 SATA SSDs, or 12 x 3.5" HDDS + PCIe SSD </li>
+  <li>Prefer slimmer nodes, if you can afford the space</li>
+  <li>Prefer fatter nodes, if you can handle complexity, and can afford many of them up-front (2-node clusters are bad for you)</li>
+  <li>Multisocket OSD nodes can be a pain to configure (NUMA)</li>  
+  <li>1 GigE networking? Don't ...
+  <li>10 GigE - go with 1-3 SATA Journal SSDs</li>
+  <li>40 GigE - go with 1+ PCIe Journal SSDs</li> 
+  </ul>
+</section>
+
+   
+<section data-transition="zoom">
+  <h1>Takeaways (2)</h1>
+  <ul>
+ <li>Avoid cluster smaller than ~6 OSD nodes (long recovery)</li>
+ <li>More data per node means longer recovery</li> 
+ <li>6 slim node cluster recovers faster than 6 fat node cluster (more data to transfer)</li>
+   </ul>
+</section>
+
+
+
+<section data-transition="zoom">
+  <h1>Tips if you're just starting out</h1>
+  <ul>
+  <li>Deep scrubbing can be a pain</li>
+  <li>Object vs Data stripping</li>
+  <li>use QoS for VMs/volumes using Ceph for RBD</li>
+  <li>use RBD cache to aggregate small IO</li>
+  <li>Watch the OpenStack summit videos on Ceph</li>
+  <li>"Ceph at CERN: A Year in the Life of a Petabyte-Scale Block Storage Service"</li>
+  </ul>
+</section>
+
+<section data-transition="zoom">
+  <h1>Thank you, questions?</h1>
+  
+  <p>slides @ https://speakerdeck.com/brightdevteam/ </p>
+</section>
+  
+
+
+<!-- CEPH -->
+    
+  </div>
+
+  <div class="footer">
+    
+  </div>
+
+  <script src="js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+
+  <script src="js/this.js"></script>
+
+  </body>
+</html>
+

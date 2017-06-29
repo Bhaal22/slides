@@ -1,0 +1,17 @@
+
+ iowait
+ 
+ scrubbing  every week
+
+ Networking
+ - 10 GigE
+ - MTU 9000
+ - 
+ 
+ 
+
+Ceph at CERN: A Year in the Life of a Petabyte-Scale Block Storage Service
+
+https://www.openstack.org/summit/vancouver-2015/summit-videos/presentation/ceph-at-cern-a-year-in-the-life-of-a-petabyte-scale-block-storage-service
+  
+  

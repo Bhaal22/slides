@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>BUG - Cloud Update</title>
+
+    <meta name="author" content="Piotr Wachowicz" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="css/zenburn.css">
+    <link rel="stylesheet" href="css/openstack.css" id="theme">
+    
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href =
+        window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' :
+          'css/print/paper.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--script src="js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/this.js"></script-->
+  </head>
+<body>
+
+  <div class="reveal"><div class="slides">
+  
+    <section data-transition="zoom">
+      <h1>Bright for Cloud - update</h1>
+      <p>Bright User Group</p>
+      <p><i>Piotr Wachowicz</i></p>
+      <p>www.brightcomputing.com</p>
+    </section>
+    
+    
+    <section data-transition="zoom">
+      <h1>What's new in 7.3</h1>
+      <img src="img/happy-cloud.jpg"/>
+    </section>
+
+    
+    <section>
+    <h2>Agenda</h2>
+      <lu>
+        <li>New in OpenStack</li>
+        <lu>
+          <li>Bright OpenStack</li>
+          <li>OpenStack upstream</li>
+        </lu>
+        <li>New in Cloud bursting (AWS)</li>
+        <lu>
+          <li>cluster-on-demand</li>
+          <li>cluster extension</li>
+          <li>cmsub</li>
+          <li>VPC only</li>
+          <li>HVM only (no more PV)</li>
+        </lu>
+      </lu>
+    </section>
+
+    
+
+    <section data-transition="zoom">
+      <img src="img/openstack1.png"/>
+    </section>
+  
+  
+    <section data-transition="zoom">
+      <h1> Bright OpenStack </h1>
+    </section>
+  
+  
+    <section>
+    <h1>Bright OpenStack in general</h1>
+      <lu>
+        <li class="fragment">OpenStack Mitaka (more later)</li>
+        <li class="fragment">Improved OpenStack CLI deployment (cm-setup: more later)</li>
+        <li class="fragment">Robustness of the deployment process</li>
+      </lu>
+    </section>
+  
+  
+    <section>
+    <h2>CaaS - Cluster-as-a-Service</h2>
+      <lu>
+        <li>Production ready</li>
+        <li>Improved CLI experience</li>
+        <li>Integrated with cloud-init (more cloud native)</li>
+        <li>Faster cluster creation (30 min -> 3 min)</li>
+      </lu>
+    </section>
+  
+    
+    <section data-transition="zoom">
+      <h1>OpenStack upstream</h1>
+      <p>What's new in Glance, Cinder, Neutron, Nova, Keystone</p>
+    </section>
+    
+    
+<section data-transition="zoom">
+<h2>OpenStack Mitaka</h2>
+<img src="img/mitaka-create-instance.png" style="width:100%"/>
+</section>
+
+    
+    <section>
+    <h2>Glance (image storage)</h2>
+      <lu>
+        <li>Horizon Dashboard - improved user experience</li>
+        <li>Glance - download images over HTTPs (+signatures)</li>
+        <li>Better support for large images (token expiration)</li>
+      </lu>
+    </section>
+        
+    <section>
+    <h2>Cinder (volume as a service)</h2>
+      <lu>
+        <li>Google Cloud Storage backup</li>
+        <li>Snapshot backup (apart from volumes)</li>
+        <li>Easier snapshot management (delete vol + all snapshots)</li>
+      </lu>
+    </section>
+    
+    <section>
+    <h2>Neutron</h2>
+      <lu>
+        <li>"Get me a network" - easier to get started</li>
+        <li>Better integration with external DNS</li>
+        <li>BGP Support (announcement of tenant subnets)</li>
+      </lu>
+    </section>
+    
+     
+    <section>
+    <h2>Heat (orchestration) (and thus CaaS)</h2>
+      <lu>
+        <li>New engine - "convergence"</li>
+        <li>Improved scalabality</li>
+        <li>BGP Support (announcement of tenant subnets)</li>
+      </lu>
+    </section>
+        
+  
+    <section data-transition="zoom">
+      <h1>Cloud Bursting</h1>
+    </section>
+  
+  
+<section>
+<h2>Cloud Bursting - two types</h2>
+<lu>
+<li>cluster-on-demand</li>
+<li>cluster extension</li>
+</lu>
+</section>
+
+
+<section data-transition="zoom">
+  <h2>Cluster-on-demand</h2>
+  <img src="img/cluster-on-demand.png" style="width:60%"/>
+</section>
+
+<section data-transition="zoom">
+  <h2>Cluster extension</h2>
+  <img src="img/cluster-extension.png" style="width:60%"/>
+</section>
+
+
+
+<!-- TODO add cloud bursting graphics -->
+
+<section data-transition="zoom">
+  <h1>in 7.3: Keep it simple</h1>
+</section>
+
+
+<section>
+<h2>Simplified cloud bursting</h2>
+<lu>
+<li>cloud-bursting in 7.3 is VPC only!</li>
+<li>VPC used to be an add-on</li>
+<li>fewer wizards, fewer tools</li>
+</lu>
+</section>
+
+
+
+<section>
+<h2>Cloud bursting is VPC Only</h2>
+<p>VPC - virtual private cloud environment</br>Some history:</p>
+<lu>
+<li class="fragment">EC2-classic  (legacy) - shared env.</li>
+<li class="fragment">VPC (current standard) - private env.</li>
+<li class="fragment">Default VPC  (transition)</li>
+</lu>
+</section>
+
+
+<section data-transition="zoom">
+  <h2>EC2-classic</h2>
+  <img src="img/ec2-classic-basics.png" style="width:60%"/>
+</section>
+
+<section data-transition="zoom">
+  <h2>VPC (a.k.a EC2-VPC) </h2>
+  <img src="img/vpc-basics.png" style="width:60%"/>
+</section>
+
+
+<section data-transition="zoom">
+  <h2>Cluster-on-Demand</h2>
+  <img src="img/cluster-on-demand-in-vpc.png" style="width:60%"/>
+</section>
+
+
+
+<section data-transition="zoom">
+  <h2>Cluster extension</h2>
+  <img src="img/bright-in-vpc.png" style="width:60%"/>
+</section>
+
+
+
+
+<section>
+<h2>Cluster-on-demand</h2>
+<lu>
+<li>Easier to setup</li>
+<li>New <u>'cm-cluster-on-demand'</u> tool</li>
+<li>Creates &amp; configures the VPC for you</li>
+<li>Create cluster-on-demand from anywhere</li>
+<li>All you need is Product Key (from customer portal)</li>
+<li>Batch creation of cluster</li>
+</lu>
+</section>
+
+
+<section>
+<h2>Cluster extension</h2>
+<lu>
+<li>Easier to setup (one tool, one wizard)</li>
+<li>Easier to understand</li>
+</lu>
+</section>
+
+
+
+
+<section>
+<h2>cm-cluster-extension</h2>
+<p>Replaces</p>
+<lu>
+
+<li>cm-cloud-setup (basic cloud bursting)</li>
+<li>cm-cloud-private-cloud-setup (VPC add-on)</li>
+<li>cm-cloud-check</li>
+
+</lu>
+<p><br/>One CMGUI wizard, instead of two</p>
+</section>
+
+
+
+<section>
+<h2>cmsub</h2>
+<lu>
+  <li>rewritten cm-cloud-storage-setup</li>
+  <li>Several core improvements</li>
+</lu>
+</section>
+
+
+<section>
+<h2>AWS Direct Connect</h2>
+<lu>
+  <li>Direct link to AWS</li>
+  <li>Now, easier to set up</li>
+</lu>
+</section>
+
+<section>
+<h2>Only HVM</h2>
+  <lu>
+  <li>Xen - 2 types of virtualization</li>
+  <lu>
+    <li>HVM - Hardware Virtual Machine</li>
+    <li>PV - Paravirtualization</li>
+  </lu>
+  <li>PV used to be faster, but requires modified kernel</li>
+  <li>HVM now faster than PV</li>
+  <li>HVM: better instance type support, regions</li>
+  </lu>
+</section>
+
+<section>
+<h2>cm-setup - unified configuration suite</h2>
+  <lu>
+  <li>cm-cluster-extension</li>
+  <li>cm-openstack-setup</li>
+  <li>cm-elk-setup</li>
+  <li>cm-galera-setup  (MariaDB cluster)</li>
+  <li>cm-cloud-storage-setup (cmsub)</li>
+  <li>bright-setup (cluster-on-demand)</li>
+  </lu>
+</section>
+
+
+
+<section data-transition="zoom">
+  <h1>Let us summarize</h1>
+</section>
+  
+
+<section>
+<h2>Takeaways</h2>
+<lu>
+<li class="fragment"> OpenStack "Mitaka" (next up, "Newton" in 8.0)</li>
+<li class="fragment"> Cloud bursting got easier</li>
+<li class="fragment"> Cluster-on-demand: cm-cluster-on-demand</li>
+<li class="fragment"> Cluster extension: cm-cluster-extension</li>
+<li class="fragment"> cmsub easier to deploy</li>
+<li class="fragment"> VPC only (dropped EC2-classic support)</li>
+<li class="fragment"> HVM only (dropped PV virtualization)</li>
+</lu>
+</section>
+
+<section data-transition="zoom">
+  <h1>Thank you, questions?</h1>
+</section>
+  
+
+
+<!-- CEPH -->
+    
+  </div>
+
+  <div class="footer">
+    
+  </div>
+
+  <script src="js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+
+  <script src="js/this.js"></script>
+
+  </body>
+</html>
+
+

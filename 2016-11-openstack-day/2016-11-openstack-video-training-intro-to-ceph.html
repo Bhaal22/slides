@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Video recording</title>
+
+    <meta name="author" content="Piotr Wachowicz" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="css/zenburn.css">
+    <link rel="stylesheet" href="css/openstack.css" id="theme">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href =
+        window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' :
+          'css/print/paper.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--script src="js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/this.js"></script-->
+  </head>
+<body>
+
+  <div class="reveal"><div class="slides">
+
+
+
+    <section data-transition="zoom">
+      <h1>Video Training Deck OpenStack</h1>
+    <p>2016-11-2</p>
+    </section>
+
+<!-- FOO -->
+<section data-transition="zoom">
+<h1>Introduction to </h1>
+<img width="80%" src="img/ceph-logo.jpg"/>
+</section>
+
+
+
+
+<section>
+<h1>What is Ceph?</h1>
+<lu>
+<li class="fragment">SDS solution</li>
+<li class="fragment">Object, Block, file storage</li>
+<li class="fragment">Popular with OpenStack (Nova, Glance, Cinder, (RadosGW))</li>
+<li class="fragment">Hardware agnostic - be careful though</li>
+</lu>
+
+<br/>
+<p class="fragment">based on</br> <u>R</u>eliable, <u>A</u>utonomous, <u>D</u>istributed <u>O</u>bject <u>S</u>tore</br>(RADOS)</p>
+</section>
+
+<section>
+<h1>High-level</h1>
+<img width="50%" src="img/ceph-elements.png"/>
+</section>
+
+<section>
+<h1>Ceph (RADOS) key features?</h1>
+<lu>
+<li class="fragment"><u>R</u>eliable - multiple replicas</li>
+<li class="fragment"><u>A</u>utonomous - self healing</li>
+<li class="fragment"><u>D</u>istributed - Data/replicas spread across nodes/racks/DCs</li>
+<li class="fragment">Scalable - @CERN: PB, 10.000vms</li>
+<li class="fragment">Client access data directly (cluster map)</li>
+<li class="fragment">Copy-on-write (Glance image to Nova/Cinder)</li>
+
+<lu>
+</section>
+
+<section>
+<h1>Ceph nodes</h1>
+<lu>
+<li class="fragment">Ceph OSD Nodes (store data) </li>
+<li class="fragment">Ceph monitor (store cluster map) (at least 3)</li>
+<li class="fragment">(optional) Ceph Metadata Server (for CephFS)</li>
+</lu>
+<p class="fragment"><br/>OSD nodes typically deployed with "SSD Journals" to speed up writes (HDDs are slow)</p>
+</section>
+
+<section>
+<h1>1 OSD node, multiple OSD Daemons</h1>
+<img src="img/ceph-architecture-storage.jpg"/>
+</section>
+
+
+
+<section>
+<img width="50%" src="img/openstack-plus-ceph.png"/>
+</section>
+
+
+<section>
+<h2>OpenStack + Ceph?</h2>
+<lu>
+<li>used for Cinder (volumes)</li>
+<li>used for Nova (ephemeral)</li>
+<li>used for Glance (images)</li>
+<li>used as Swift replacement (object via Rados Gateway)</li>
+</lu>
+</section>
+
+<section data-transition="zoom">
+<img width="90%" src="img/openstack-plus-ceph-diagram.jpg"/>
+</section>
+
+
+
+
+<section>
+<h2>Ceph and data replication</h2>
+<lu>
+<li class="fragment">Client wants to write data</li>
+<li class="fragment">Retrieves cluster map from monitor</li>
+<li class="fragment">Determine OSD:</li>
+</lu>
+
+<img width="50%" src="img/ceph-crush-placement.png" class="fragment"/>
+</section>
+
+
+
+<section>
+
+<h2>Ceph and data replication</h2>
+<lu>
+<li>Writes to primary OSD</li>
+<li>OSD replicates to other OSDs</li>
+</lu>
+<img width="40%" src="img/ceph-replication.png"/>
+</section>
+
+
+<section data-transition="zoom">
+<h1>Summary</h1>
+</section>
+
+<section>
+<h2>Takeways</h2>
+<lu>
+<li class="fragment">Distributed Object Storage system</li>
+<li class="fragment">Cloud scale, but simple</li>
+<li class="fragment">Works great with OpenStack</li>
+<li class="fragment">But can also be used standalone</li>
+</lu>
+</section>
+
+<section>
+Thank you
+</section>
+
+
+  </div>
+
+  <div class="footer">
+
+  </div>
+
+  <script src="js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+
+  <script src="js/this.js"></script>
+
+  </body>
+</html>
+
+
