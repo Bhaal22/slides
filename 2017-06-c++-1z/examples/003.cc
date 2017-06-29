@@ -3,7 +3,6 @@
 #include <future>
 #include <thread>
 
-using namespace std;
 
 int myComputation(int x) {
   for (unsigned i = 0 ; i < 999999999 ; ++i) {
@@ -40,7 +39,7 @@ int main() {
   t2.join();
 
   // Final result
-  cout<< "Value 1: " << val1.get() << endl;
-  cout<< "Value 2: " << val2.get() << endl;
+  std::cout << "Value 1: " << val1.get() << std::endl;
+  std::cout << "Value 2: " << val2.get() << std::endl;
   return 0;
 }
