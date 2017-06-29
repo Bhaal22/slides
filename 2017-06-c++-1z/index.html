@@ -107,11 +107,89 @@
                 <section>
                     <h3>standard library: threading</h3>
 
+                    <img src="img/sync.jpeg" />
+                </section>
+
+                <section>
+                    <h3>standard library: threading</h3>
+
+                    <img src="img/async.jpeg" />
+                </section>
+
+                <section>
+                    <h3>standard library: threading</h3>
+
                     <ul>
                         <li>abstraction initially defined in boost</li>
                         <li>std::thread</li>
                         <li>std::mutex</li>
                         <li>std::condition_variable</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>standard library: asynchronous</h3>
+
+                    <ul>
+                        <li>std::thread : low level asynchronous mechanism</li>
+                        <li>a task is something a developper wants to be done (e.g. a computation)</li>
+                        <li>a task uses a thread as support for asynchronous operations</li>
+                        <li>std::async</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Javascript future / promise: chain defers</h3>
+                    <pre>
+                        <code class="hljs" data-trim contenteditable>
+// Defered chaining
+return httpGet(currentModule.fullUrl).then(function (res){
+    return loadBody(res);
+}, currentModule.httpGetError).then(function (webData) {
+    return envPromise(webData);
+}).then(function (window){
+    return extractData(window);
+}, currentModule.envError);
+                        </code>
+                    </pre>
+                </section>
+
+                <section>
+                    <h3>Two Tasks. One process. (I’ll give you something in the Future. I Promise.)</h3>
+
+                    <ul>
+                        <li>assume you have no need for coordination between threads and no shared data</li>
+                        <li>compute a single function in parallel for two different initial values</li>
+                        <li>futures = result of an asynchronous result provider</li>
+                        <li>std::promise, std::packaged_task, and std::async</li>
+                        <li>implements <b>get_future()</b></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Differences accross the different interfaces: std::async</h3>
+
+                    <ul>
+                        <li>std::promise. The most flexible way to provide a value for a future. Computation is performed independently from the promise object and the result is simply passed through the object to the future using the set_value() method.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Differences accross the different interfaces: std::packaged_task</h3>
+
+                    <ul>
+                        <li>std::packaged_task. The second most flexible way to provide a value for a future. The constructor takes a function and uses the return value of that function to set the value for the future. Since packaged_tasks must be explicitly invoked, they can be created and then assigned to be run on particular threads.</li>
+                    </ul>
+
+                </section>
+
+                <section>
+                    <h3>Differences accross the different interfaces: std::async</h3>
+
+                    <ul>
+                        <li>std::async. Provides the least flexibility, but also the simplest way to execute an asynchronous computation. The method takes a function and uses the return value of that function to set the value for the future.</li>
+                        <li>the primary distinction between std::async and std::packaged_task is that std::async automatically begins execution upon calling it.</li>
+                        <li>the caller has no control over where the task is scheduled to run (including on the current thread).</li>
                     </ul>
                 </section>
 
