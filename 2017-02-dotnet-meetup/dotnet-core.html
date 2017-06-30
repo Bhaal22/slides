@@ -145,7 +145,7 @@ ReadElementString -> ReadElementContentAs{String, Int, Double, ...}
 
                     <section>
                         <h3 align="left">Differences</h3>
-                        <h4>Reflection</h4>
+                        <h4>Reflection [obsoloete. Fixed with netcoreapp1.1] </h4>
                         <pre><code class="hljs" data-trim contenteditable>
 Type.GetProperties() does not exist
                         </code></pre>
@@ -191,7 +191,7 @@ Eastern Standard Time (windows) -> EST (linux)
 
                         <pre><code class="hljs" data-trim contenteditable>
 $ dotnet --help
-.NET Command Line Tools (1.0.0-preview2-1-003155)
+.NET Command Line Tools (1.0.0)
 Usage: dotnet [host-options] [command] [arguments] [common-options]
 
 Arguments:
@@ -205,18 +205,31 @@ Common options:
   -h|--help             Show help
 
 Host options (passed before the command):
-  -v|--verbose          Enable verbose output
+  -d|--diagnostics      Enable diagnostic output
   --version             Display .NET CLI Version Number
   --info                Display .NET CLI Info
 
-Common Commands:
-  new           Initialize a basic .NET project
-  restore       Restore dependencies specified in the .NET project
-  build         Builds a .NET project
-  publish       Publishes a .NET project for deployment (including the runtime)
-  run           Compiles and immediately executes a .NET project
-  test          Runs unit tests using the test runner specified in the project
-  pack          Creates a NuGet package
+Commands:
+  new           Initialize .NET projects.
+  restore       Restore dependencies specified in the .NET project.
+  build         Builds a .NET project.
+  publish       Publishes a .NET project for deployment (including the runtime).
+  run           Compiles and immediately executes a .NET project.
+  test          Runs unit tests using the test runner specified in the project.
+  pack          Creates a NuGet package.
+  migrate       Migrates a project.json based project to a msbuild based project.
+  clean         Clean build output(s).
+  sln           Modify solution (SLN) files.
+
+Project modification commands:
+  add           Add items to the project
+  remove        Remove items from the project
+  list          List items in the project
+
+Advanced Commands:
+  nuget         Provides additional NuGet commands.
+  msbuild       Runs Microsoft Build Engine (MSBuild).
+  vstest        Runs Microsoft Test Execution Command Line Tool.
 					              </code></pre>
                     </section>
 
@@ -225,8 +238,39 @@ Common Commands:
 
                         <pre><code class="hljs" data-trim contenteditable>
 $ cd test-core
-$ dotnet init
-Created new C# project in dev/test-core
+$ dotnet new
+Template Instantiation Commands for .NET Core CLI.
+
+Usage: dotnet new [arguments] [options]
+
+Arguments:
+  template  The template to instantiate.
+
+Options:
+  -l|--list         List templates containing the specified name.
+  -lang|--language  Specifies the language of the template to create
+  -n|--name         The name for the output being created. If no name is specified, the name of the current directory is used.
+  -o|--output       Location to place the generated output.
+  -h|--help         Displays help for this command.
+  -all|--show-all   Shows all templates
+
+
+Templates                 Short Name      Language      Tags
+----------------------------------------------------------------------
+Console Application       console         [C#], F#      Common/Console
+Class library             classlib        [C#], F#      Common/Library
+Unit Test Project         mstest          [C#], F#      Test/MSTest
+xUnit Test Project        xunit           [C#], F#      Test/xUnit
+ASP.NET Core Empty        web             [C#]          Web/Empty
+ASP.NET Core Web App      mvc             [C#], F#      Web/MVC
+ASP.NET Core Web API      webapi          [C#]          Web/WebAPI
+Solution File             sln                           Solution
+
+Examples:
+    dotnet new mvc --auth None --framework netcoreapp1.1
+    dotnet new classlib
+    dotnet new --help
+
                         </code></pre>
                     </section>
 
@@ -234,14 +278,23 @@ Created new C# project in dev/test-core
                         <h3>dotnet cli</h3>
 
                         <pre><code class="hljs" data-trim contenteditable>
-$ cd test-core
+$ dotnet new console
 $ ls
-Program.cs project.json
+Program.cs  cli1.csproj
                         </code></pre>
                     </section>
 
                     <section>
                         <h3>dotnet cli</h3>
+
+                        <ul>
+                            <li>Initially created project.json file for project description</li>
+                            <li>Updated on regular csproj in 2017</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h3>dotnet cli: Old project.json</h3>
 
                         <pre><code class="hljs" data-trim contenteditable>
 $ cat project.json
@@ -268,30 +321,51 @@ $ cat project.json
                     </section>
 
                     <section>
+                        <h3>dotnet cli: projectName.csproj</h3>
+
+                        <pre><code class="hljs" data-trim contenteditable>
+$ C:\dev\tests\cli1>cat cli1.csproj
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+</Project>
+                        </code></pre>
+                    </section>
+
+                    <section>
                         <h3>dotnet cli</h3>
                         <pre><code class="hljs" data-trim contenteditable>
-$ dotnet build
-Project test1 does not have a lock file. Please run "dotnet restore" to generate a new lock file.
-Project test1 does not have a lock file. Please run "dotnet restore" to generate a new lock file.
 
-$ dotnet restore
-log  : Restoring packages for /tmp/test1/project.json...
-log  : Writing lock file to disk. Path: /tmp/test1/project.lock.json
-log  : /tmp/test1/project.json
-log  : Restore completed in 744ms.
+$ dotnet restore cli1.csproj
+  Restoring packages for C:\dev\tests\cli1\cli1.csproj...
+  Generating MSBuild file C:\dev\tests\cli1\obj\cli1.csproj.nuget.g.props.
+  Generating MSBuild file C:\dev\tests\cli1\obj\cli1.csproj.nuget.g.targets.
+  Writing lock file to disk. Path: C:\dev\tests\cli1\obj\project.assets.json
+  Restore completed in 1.67 sec for C:\dev\tests\cli1\cli1.csproj.
 
-$ dotnet build 
-Project test1 (.NETCoreApp,Version=v1.1) will be compiled because expected outputs are missing
-Compiling test1 for .NETCoreApp,Version=v1.1
+  NuGet Config files used:
+      C:\Users\john.muller\AppData\Roaming\NuGet\NuGet.Config
+      C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
 
-Compilation succeeded.
+  Feeds used:
+      https://api.nuget.org/v3/index.json
+      C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+
+$ dotnet build cli1.csproj
+Microsoft (R) Build Engine version 15.1.548.43366
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+  cli1 -> C:\dev\tests\cli1\bin\Debug\netcoreapp1.1\cli1.dll
+
+Build succeeded.
     0 Warning(s)
     0 Error(s)
 
-Time elapsed 00:00:00.8766378
+Time Elapsed 00:00:03.04
 
 $ dotnet run
-Project test1 (.NETCoreApp,Version=v1.1) was previously compiled. Skipping compilation.
 Hello World!
                         </code></pre>
                     </section>
@@ -307,20 +381,16 @@ Hello World!
                         </ul>
                     </section>
 
-                    <section>
-                        <h3>Unit testing: Discovery Protocol</h3>
-
-                        <img src="img/dotnet-test-discover.png" />
-                    </section>
-                </section>
-
                 <section>
                     <h3>Roadmap</h3>
 
                     <ul>
                         <li>Vb.net support</li>
-                        <li>msbuild</li>
+                        <li>msbuild (released in early 2017)</li>
                         <li>powershell (with ssh support)</li>
+                        <li>ARM 32/64</li>
+                        <li>More Linux distributions</li>
+
                     </ul>
                 </section>
 
@@ -331,8 +401,6 @@ Hello World!
                         <li>ASPnet.core REST API service</li>
                         <li>Windows 10</li>
                         <li>Windows Server 2016 in a docker container</li>
-                        <li>Linux (Debian)</li>
-                        <li>Raspberry Pi3</li>
                     </ul>
                 </section>
 
