@@ -20,7 +20,7 @@ int main()
     std::vector<int> numbers = { 1, 2, 3, 4, 5, 6 };
     std::promise<int> accumulate_promise;
     std::future<int> accumulate_future = accumulate_promise.get_future();
-    
+
     std::thread work_thread(accumulate, numbers.begin(), numbers.end(),
                             std::move(accumulate_promise));
     accumulate_future.wait();  // wait for result
