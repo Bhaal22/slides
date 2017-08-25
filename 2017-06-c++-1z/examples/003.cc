@@ -5,7 +5,7 @@
 
 
 int myComputation(int x) {
-  for (unsigned i = 0 ; i < 999999999 ; ++i) {
+  for (auto i = 0 ; i < 999999999 ; ++i) {
     x++;
   }
   return x;

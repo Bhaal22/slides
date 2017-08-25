@@ -49,6 +49,12 @@
 				        </section>
 
                 <section>
+                    <h3>History</h3>
+
+                    <img src="img/timeline.png" />
+                </section>
+
+                <section>
                     <h3>Motivations</h3>
 
                     <ul>
@@ -155,6 +161,24 @@ return httpGet(currentModule.fullUrl).then(function (res){
                 </section>
 
                 <section>
+                    <h3>C# aync / await</h3>
+                    <pre>
+                        <code class="hljs" data-trim contenteditable>
+public async Task<User> GetUser(int userId)
+{
+    // Try Do something smart
+}
+
+public static async Task<User[]> GetUsers(IEnumerable<int> userIds)
+{
+    var getUserTasks = userIds.Select(id => GetUser(id));
+    return await Task.WhenAll(getUserTasks);
+}
+                        </code>
+                    </pre>
+                </section>
+
+                <section>
                     <h3>Two Tasks. One process. (I’ll give you something in the Future. I Promise.)</h3>
 
                     <ul>
@@ -163,12 +187,11 @@ return httpGet(currentModule.fullUrl).then(function (res){
                         <li>compute a single function in parallel for two different initial values</li>
                         <li>futures = result of an asynchronous result provider</li>
                         <li>std::promise, std::packaged_task, and std::async</li>
-                        <li>implements <b>get_future()</b></li>
                     </ul>
                 </section>
 
                 <section>
-                    <h3>Differences accross the different interfaces: std::async</h3>
+                    <h3>Differences of the different interfaces: <b>std::promise</b></h3>
 
                     <ul>
                         <li>std::promise. The most flexible way to provide a value for a future. Computation is performed independently from the promise object and the result is simply passed through the object to the future using the set_value() method.</li>
@@ -176,7 +199,7 @@ return httpGet(currentModule.fullUrl).then(function (res){
                 </section>
 
                 <section>
-                    <h3>Differences accross the different interfaces: std::packaged_task</h3>
+                    <h3>Differences of the different interfaces: <b>std::packaged_task</b></h3>
 
                     <ul>
                         <li>std::packaged_task. The second most flexible way to provide a value for a future. The constructor takes a function and uses the return value of that function to set the value for the future. Since packaged_tasks must be explicitly invoked, they can be created and then assigned to be run on particular threads.</li>
@@ -185,7 +208,7 @@ return httpGet(currentModule.fullUrl).then(function (res){
                 </section>
 
                 <section>
-                    <h3>Differences accross the different interfaces: std::async</h3>
+                    <h3>Differences of the different interfaces: <b>std::async</b></h3>
 
                     <ul>
                         <li>std::async. Provides the least flexibility, but also the simplest way to execute an asynchronous computation. The method takes a function and uses the return value of that function to set the value for the future.</li>
@@ -198,7 +221,7 @@ return httpGet(currentModule.fullUrl).then(function (res){
                     <h3>Limitations</h3>
 
                     <ul>
-                        <li>Cannot chain futures (std::future::then() / std::future::except())</li>
+                        <li>Cannot chain futures (std::future::then())</li>
                         <li>Must wait for C++20</li>
                         <li>Available in TS experimental package</li>
                     </ul>
@@ -219,11 +242,9 @@ future<vector<future<int>>> any_f = when_any(begin(futures), end(futures));
 future<int> futures[] = {async([]() { return intResult(125); }),
                          async([]() { return intResult(456); })};
 future<vector<future<int>>> all_f = when_all(begin(futures), end(futures));
-
                         </code>
                     </pre>
                 </section>
-
 
 				        <section style="text-align: left;">
 					          <h2> Thank you ! Q/A ?</h2>

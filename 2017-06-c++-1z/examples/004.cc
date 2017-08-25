@@ -11,6 +11,8 @@ void accumulate(std::vector<int>::iterator first,
 {
     int sum = std::accumulate(first, last, 0);
     accumulate_promise.set_value(sum);  // Notify future
+
+    std::sleep(3000);
 }
 
 

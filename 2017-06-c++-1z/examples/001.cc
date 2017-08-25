@@ -37,9 +37,12 @@ int main(int argc, char **argv)
 {
   A a({1,2,3});
 
+  std::vector<int> v = {1,2,3};
   std::cout << a.i << std::endl;
 
   int j = 125;
+
+  auto index = 12;
   auto z = f(a, j);
 
   std::cout << z << std::endl;

@@ -21,7 +21,7 @@ int main(int argc, char **argv)
   A a;
 
   a.f(0);
-  //a.f(NULL);
+  a.f(NULL);
   a.f(nullptr);
   return 0;
 }
