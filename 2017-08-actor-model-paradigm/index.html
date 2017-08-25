@@ -57,30 +57,61 @@
                 </section>
 
                 <section>
-                    <h3>Concurrency</h3>
-
+                    <h3>Motivation</h3>
                     <ul>
-                        <li>Processes</li>
-                        <li>Threads</li>
+                        <li>prospect of highly parallel computing machines consisting of dozens, hundreds, or even thousands of independent microprocessors</li>
+                        <li>each with its own local memory and communications processor, communicating via a high-performance communications network</li>
                     </ul>
                 </section>
 
                 <section>
                     <h3>Problem</h3>
 
+                    <p>Communication !!</p>
+
                     <img src="img/communication_problem.jpg" />
+                </section>
+
+                <section>
+                    <h3>Threads / Locks / Shared State</h3>
 
                     <ul>
-                        <li>Share</li>
-                        <li>Copy</li>
+                        <li>thread describes a sequential flow of control</li>
+                        <li>that is isolated from other activities at first glance</li>
+                        <li>Unlike processes, threads share the same address space though</li>
+                        <li>multiple independent threads may access the same variables and states concurrently</li>
+                        <li>sequential programming is built on the concept of mutable state, which means that multiple threads may compete for write operations</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h3>The model</h3>
+                    <h3>Threads / Locks / Shared State</h3>
+
+                    <ul>
+                        <li>race conditions</li>
+                        <li>deadlocks usling locking mechanism: semaphore / mutex / monitor (with conditional variables)</li>
+                        <li>livelocks: prevent threads to continue</li>
+                        <li>lock starvations</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Threads / Locks / Shared State</h3>
+
+                    <ul>
+                        <li>threads, shared state and locking available in most languages</li>
+                        <li>It is important to recognize that this approach represents a low-level concept towards concurrency.</li>
+                        <li>closer to the bare metal than the other concepts</li>
+                        <li>all of these concepts still use threads under the hood</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>The Actor model</h3>
 
                     <ul>
                         <li>defines some general rules for how the system’s components should behave and interact with each other</li>
+                        <li>inspired by physics, including general relativity and quantum mechanics</li>
                     </ul>
                 </section>
 
@@ -130,7 +161,8 @@
                     <ul>
                         <li>although multiple actors can run at the same time, an actor will process a given message sequentially</li>
                         <li>messages are sent asynchronously to an actor</li>
-                        <li>need to be stroed until processing</li>
+                        <li>need to be stored until processing</li>
+                        <li>messages are immutable</li>
                     </ul>
                 </section>
 
@@ -162,11 +194,8 @@
 
                     <ul>
                         <li>actor can maintain a private state</li>
-                        <li></li>
+                        <li>defining how this state will look like for the next message it receives, how state mutation occurs</li>
                     </ul>
-“Designating what to do with the next message” basically means defining how this state will look like for the next message it receives. Or, more clearly, it’s how actors mutate state.
-
-                    Let’s imagine we have an actor that behaves like a calculator and that its initial state is simply the number 0. When this actor receives the add(1) message, instead of mutating its original state, it designates that for the next message it receives, the state will be 1.
                 </section>
 
                 <section>
@@ -237,6 +266,14 @@
 					          <h2> Thank you ! Q/A ?</h2>
 				        </section>
 
+                <section style="text-align: left;">
+                    <h3>Liberty Global's Appathon</h3>
+
+                    <ul>
+                        <li>Team with Abel Moyo</li>
+                        <li>Need 1 or 2 persons</li>
+                    </ul>
+				        </section>
 			      </div>
 
 		    </div>
