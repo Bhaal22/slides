@@ -6,8 +6,8 @@
 
 		    <title></title>
 
-		    <meta name="description" content="Introduction to C++-1z">
-		    <meta name="author" content="Hakim El Hattab">
+		    <meta name="description" content="Actor model programming paradigm">
+		    <meta name="author" content="Jonathan Muller">
 
 		    <meta name="apple-mobile-web-app-capable" content="yes">
 		    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -41,8 +41,7 @@
 			      <!-- Any section element inside of this container is displayed as a slide -->
 			      <div class="slides">
 				        <section>
-					          <h1>C++-{1, 2}z</h1>
-					          <h3>C++-{11, 14, 17, 20}</h3>
+					          <h3>Actor model paradigm</h3>
 					          <p>
 						            <small>Jonathan Muller / <a href="http://twitter.com/bhaal22">@bhaal22</a></small>
 					          </p>
@@ -52,184 +51,190 @@
                     <h3>Motivations</h3>
 
                     <ul>
-                        <li>No updates of the language / standard library since 2003</li>
-                        <li>Increase type safety by providing safer alternatives to earlier unsafe techniques</li>
-                        <li>Increase performance and the ability to work directly with hardware</li>
-                        <li>Implement zero-overhead principle</li>
-                        <li>Make C++ easy to teach and to learn without removing any utility needed by expert programmers</li>
+                        <li>Concurrency = performing 2 operations in tandem (processing 2 webrequests)</li>
+                        <li>Parallelism = performing 2 operations literally on the same time (with 2 cores)</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h3>Motivations: personal thoughts</h3>
+                    <h3>Concurrency</h3>
 
                     <ul>
-                        <li>make c++ fun again</li>
-                        <li>try to get back developpers to use this language</li>
-                        <li>other languages have a shorter lifecycle: javascript, java, c#</li>
-                        <li>c# is born in 2002 and currently c# 7 is implemented</li>
-                        <li>try to improve speed of writing c++ code</li>
-                        <li>since 2011, language / standard library improves every 3 years</li>
+                        <li>Processes</li>
+                        <li>Threads</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h3>Core language updates</h3>
+                    <h3>Problem</h3>
+
+                    <img src="img/communication_problem.jpg" />
 
                     <ul>
-                        <li>compile time improvement: extern template</li>
-                        <li>Initializer lists</li>
-                        <li>type inference: <b>auto</b> keyword and <b>decltype</b></li>
-                        <li>lambda functions: syntaxic sugar around functors</li>
+                        <li>Share</li>
+                        <li>Copy</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h3>Core language updates: Class hierarchy</h3>
+                    <h3>The model</h3>
 
                     <ul>
-                        <li><b>override</b> keyword: tell compile to look in inheritance tree for a virtual method with the same signature</li>
-                        <li><b>final</b> keyword: class definition / method definition</li>
+                        <li>defines some general rules for how the system’s components should behave and interact with each other</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h3>Core language updates: misc</h3>
+                    <h3>Languages with Actor built-in</h3>
 
                     <ul>
-                        <li>strongly typed <b>nullptr</b></li>
-                        <li>stronglty typed enums</li>
-                        <li>string literals: u8 (utf-8), u (utf-16), U (utf-32)</li>
-                        <li>smart pointers: std::unique_ptr, std::shared_ptr, std::weak_ptr</li>
+                        <li>Erlang</li>
+                        <li>Elixir</li>
+                        <li>Scala</li>
+                        <li>ponylang</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h3>standard library: threading</h3>
-
-                    <img src="img/sync.jpeg" />
-                </section>
-
-                <section>
-                    <h3>standard library: threading</h3>
-
-                    <img src="img/async.jpeg" />
-                </section>
-
-                <section>
-                    <h3>standard library: threading</h3>
+                    <h3>Actor frameworks</h3>
 
                     <ul>
-                        <li>abstraction initially defined in boost</li>
-                        <li>std::thread</li>
-                        <li>std::mutex</li>
-                        <li>std::condition_variable</li>
+                        <li>Akka (java) / Akka.net (.net)</li>
+                        <li>Orleans (.net)</li>
+                        <li>CAF_C++ Actor Framework</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h3>standard library: asynchronous</h3>
+                    <h3>Actors</h3>
 
                     <ul>
-                        <li>std::thread : low level asynchronous mechanism</li>
-                        <li>a task is something a developper wants to be done (e.g. a computation)</li>
-                        <li>a task uses a thread as support for asynchronous operations</li>
-                        <li>std::async</li>
+                        <li>actor = primitive unit of computation</li>
+                        <li>receives message / compute</li>
+                        <li>actors are completely isolated from each other and they will never share memory</li>
+                        <li>actor maintain internal state that can never be changed directly by another actor</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h3>Javascript future / promise: chain defers</h3>
-                    <pre>
-                        <code class="hljs" data-trim contenteditable>
-// Defered chaining
-return httpGet(currentModule.fullUrl).then(function (res){
-    return loadBody(res);
-}, currentModule.httpGetError).then(function (webData) {
-    return envPromise(webData);
-}).then(function (window){
-    return extractData(window);
-}, currentModule.envError);
-                        </code>
-                    </pre>
-                </section>
-
-                <section>
-                    <h3>Two Tasks. One process. (I’ll give you something in the Future. I Promise.)</h3>
+                    <h3>Actors</h3>
 
                     <ul>
-                        <li>promise / futur paire = machanism to get data between threads</li>
-                        <li>assume you have no need for coordination between threads and no shared data</li>
-                        <li>compute a single function in parallel for two different initial values</li>
-                        <li>futures = result of an asynchronous result provider</li>
-                        <li>std::promise, std::packaged_task, and std::async</li>
-                        <li>implements <b>get_future()</b></li>
-                    </ul>
+                        <li>In the actor model everything is an actor</li>
+                        <li>need to have addresses so one actor can send a message to another</li>
                 </section>
 
                 <section>
-                    <h3>Differences accross the different interfaces: std::async</h3>
+                    <h3>Actors have mailboxes</h3>
 
                     <ul>
-                        <li>std::promise. The most flexible way to provide a value for a future. Computation is performed independently from the promise object and the result is simply passed through the object to the future using the set_value() method.</li>
+                        <li>although multiple actors can run at the same time, an actor will process a given message sequentially</li>
+                        <li>messages are sent asynchronously to an actor</li>
+                        <li>need to be stroed until processing</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h3>Differences accross the different interfaces: std::packaged_task</h3>
+                    <h3>Actors</h3>
+
+                    <img src="img/actors.png" height="256" width="512" />
+                    <ul>
+                        <li>communicate with each other by sending asynchronous messages</li>
+                        <li>messages stored in other actors' mailboxes until they're processed</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>What actors do</h3>
+
+                    <p>When an actor receives a message</p>
+                    <p>It can do one of these 3 things:</p>
 
                     <ul>
-                        <li>std::packaged_task. The second most flexible way to provide a value for a future. The constructor takes a function and uses the return value of that function to set the value for the future. Since packaged_tasks must be explicitly invoked, they can be created and then assigned to be run on particular threads.</li>
+                        <li>Create more actors</li>
+                        <li>Send messages to other actors</li>
+                        <li>Designates what to do with the next message</li>
                     </ul>
-
                 </section>
 
                 <section>
-                    <h3>Differences accross the different interfaces: std::async</h3>
+                    <h3>What actors do</h3>
 
                     <ul>
-                        <li>std::async. Provides the least flexibility, but also the simplest way to execute an asynchronous computation. The method takes a function and uses the return value of that function to set the value for the future.</li>
-                        <li>the primary distinction between std::async and std::packaged_task is that std::async automatically begins execution upon calling it.</li>
-                        <li>the caller has no control over where the task is scheduled to run (including on the current thread).</li>
+                        <li>actor can maintain a private state</li>
+                        <li></li>
                     </ul>
+“Designating what to do with the next message” basically means defining how this state will look like for the next message it receives. Or, more clearly, it’s how actors mutate state.
+
+                    Let’s imagine we have an actor that behaves like a calculator and that its initial state is simply the number 0. When this actor receives the add(1) message, instead of mutating its original state, it designates that for the next message it receives, the state will be 1.
                 </section>
 
                 <section>
-                    <h3>Limitations</h3>
+                    <h3>Fault tolerance</h3>
 
                     <ul>
-                        <li>Cannot chain futures (std::future::then() / std::future::except())</li>
-                        <li>Must wait for C++20</li>
-                        <li>Available in TS experimental package</li>
+                        <li>Erlang introduced the “let it crash” philosophy</li>
+                        <li>shouldn’t need to program defensively, trying to anticipate all the possible problems that could happen and find a way to handle them</li>
+                        <li>simply because there is no way to think about every single failure point</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h3></h3>
+                    <h3>Fault tolerance</h3>
 
-                    <pre>
-                        <code class="hljs" data-trim contenteditable>
-future<int> f1 = async([]() {return 123;});
-future<string> f2 = f1.then([](future<int> f){ return f.get().to_string(); });
-
-future<int> futures[] = {async([]() { return intResult(125); }),
-                         async([]() { return intResult(456); })};
-future<vector<future<int>>> any_f = when_any(begin(futures), end(futures));
-
-future<int> futures[] = {async([]() { return intResult(125); }),
-                         async([]() { return intResult(456); })};
-future<vector<future<int>>> all_f = when_all(begin(futures), end(futures));
-
-                        </code>
-                    </pre>
+                    <ul>
+                        <li>Every code run inside a process</li>
+                        <li>completely isolated, meaning its state is not going to influence any other process</li>
+                    </ul>
                 </section>
+
+                <section>
+                    <h3>Fault tolerance</h3>
+
+                    <ul>
+                        <li>We have a supervisor, that is basically another process</li>
+                        <li>that will be notified when the supervised process crashes and then can do something about it</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Fault tolerance</h3>
+
+                    <img src="img/supervisor_processes.gif" />
+                </section>
+
+                <section>
+                    <h3>Fault tolerance</h3>
+
+                    <img src="img/supervisor_processes_all_for_one.gif" />
+                </section>
+
+                <section>
+                    <h3>Fault tolerance</h3>
+
+                    <ul>
+                        <li>possible to create systems that “self heal”</li>
+                        <li>multiple strategies (e.g: restart the child)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Distribution</h3>
+
+                    <ul>
+                        <li>doesn’t matter if the targeted actor is running locally or in another node</li>
+                        <li>actor is just this unit of code with a mailbox and an internal state, and it just respond to messages</li>
+                        <li>who cares in which machine it’s actually running?
+                    </ul>
+
+                    <p>This allows us to create systems that leverage multiple computers and helps us to recover if one of them fail</p>
+                </section>
+
+
 
 
 				        <section style="text-align: left;">
 					          <h2> Thank you ! Q/A ?</h2>
-					          <p>
-						            - <a href="https://github.com/cplusplus/draft">C++ Specification Repository</a> <br>
-					          </p>
 				        </section>
 
 			      </div>
